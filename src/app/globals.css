@@ -1,0 +1,11 @@
+@import "tailwindcss";
+
+body {
+  font-family: "Poppins", sans-serif; /* Primary Font */
+}
+
+h1,
+h2,
+h3 {
+  font-family: "Montserrat", sans-serif; /* Headings */
+}
