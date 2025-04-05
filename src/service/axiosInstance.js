@@ -7,6 +7,8 @@ export const imgPath = "http://localhost:4001/";
 export const apipath =
   process.env.NODE_ENV === "development"
     ? "http://localhost:8000/api/"
+    : process.env.NODE_ENV === "staging"
+    ? "https://makapt-api.vercel.app/api/"
     : "/api/";
 const axiosInstance = axios.create({
   baseURL: apipath,
