@@ -12,15 +12,20 @@ import { filtersData } from "./mockData";
 import DoctorCardList from "./section/DoctorCardList";
 import { formatSchedule, renderSpecialist } from "../../utils/helper";
 import { useApplicationContext } from "@/context/ApplicationContext";
+import { FiFilter } from "react-icons/fi";
 
 export default function DoctorListingPage() {
   const { isLoggedInUser } = useApplicationContext();
   const router = useRouter();
   const searchParams = useSearchParams();
 
-  // Create a new URLSearchParams instance to modify parameters
   const params = new URLSearchParams(searchParams.toString());
-  // const paramsObject = Object.fromEntries(searchParams.entries());
+
+  const filterKeys = ["experience", "availability", "gender", "fees"];
+
+  const activeFilterCount = Array.from(params.entries()).filter(
+    ([key, value]) => filterKeys.includes(key) && value
+  ).length;
 
   const id = searchParams.get("id");
 
@@ -33,20 +38,7 @@ export default function DoctorListingPage() {
   const [docList, setDocList] = useState({ data: [] });
   const [schedules, setSchedules] = useState([]);
   const [selectedTab, setSelectedTab] = useState(0);
-
-  // const fetchData = async (page) => {
-  //   const offset = page - 1;
-  //   const result = await doctorFactory.getDoctorLists({
-  //     ...paramsObject, // Spread all query parameters dynamically
-  //     itemsPerPage,
-  //     offset,
-  //   });
-  //   setDocList(result.data);
-  // };
-
-  // useEffect(() => {
-  //   fetchData(currentPage);
-  // }, [currentPage]);
+  const [sortBy, setSortBy] = useState("none");
 
   const paramsObject = useMemo(
     () => Object.fromEntries(searchParams.entries()),
@@ -57,18 +49,23 @@ export default function DoctorListingPage() {
     async (page) => {
       const offset = page - 1;
       const result = await doctorFactory.getDoctorLists({
-        ...paramsObject, // Now paramsObject is memoized ✅
+        ...paramsObject,
         itemsPerPage,
         offset,
+        sortBy,
       });
       setDocList(result.data);
     },
-    [paramsObject, itemsPerPage] // ✅ Memoized dependencies
+    [paramsObject, itemsPerPage, sortBy]
   );
 
   useEffect(() => {
     fetchData(currentPage);
-  }, [currentPage, fetchData]); // ✅ Stable dependencies
+  }, [currentPage, fetchData, sortBy]);
+
+  const sortByHandler = (e) => {
+    setSortBy(e.target.value);
+  };
 
   const handleBookAppointment = (doctor) => {
     const res = formatSchedule(doctor?.schedules);
@@ -110,7 +107,6 @@ export default function DoctorListingPage() {
     <div className="pt-24 bg-gray-100 min-h-screen">
       <div className="max-w-7xl mx-auto p-4 ">
         <div className="flex gap-4 bg-white">
-          {/* Sidebar (Desktop) */}
           <aside className="hidden md:block w-1/4 bg-white p-4 rounded   sticky top-4 h-fit">
             <h2 className="text-lg font-semibold">Find the Right Doctor</h2>
             <p className="text-gray-600 text-sm mb-0">
@@ -199,29 +195,49 @@ export default function DoctorListingPage() {
             {/* Title takes full width */}
             <h1 className="mb-3 text-xl font-semibold w-full">Find Doctors</h1>
 
-            {/* Mobile: Button & Select in a row */}
-            <div className="mb-3 flex w-full md:w-auto gap-2">
-              <div className="flex md:hidden justify-between">
-                <button
-                  onClick={() => setIsOpen(true)}
-                  className="bg-blue-600 text-white px-4 py-2 rounded w-full md:w-auto"
+            <div className="mb-3 w-full overflow-x-auto whitespace-nowrap scrollbar-hide md:overflow-visible md:whitespace-normal md:scrollbar-default md:w-auto">
+              <div className="flex gap-3 w-max">
+                <select
+                  onChange={sortByHandler}
+                  className="w-[100px] md:w-auto rounded-[25px] border border-blue-600 p-2 text-sm text-blue-600 font-medium"
                 >
-                  Filters
-                </button>
-              </div>
+                  <option value="">Sort by</option>
+                  <option value="yearOfExperience">
+                    Experience: High to Low
+                  </option>
+                  <option value="highToLow">
+                    Consultation Fee - High to Low
+                  </option>
+                  <option value="lowToHigh">
+                    Consultation Fee - Low to High
+                  </option>
+                  <option value="mostLiked">Patient Review - Most Liked</option>
+                </select>
 
-              <select className="border p-2 rounded w-full md:w-auto">
-                <option value="yearOfExperience">
-                  Experience: High to Low
-                </option>
-                <option value="highToLow">
-                  Consultation Fee - High to Low
-                </option>
-                <option value="lowToHigh">
-                  Consultation Fee - Low to High
-                </option>
-                <option value="mostLiked">Patient Review - Most Liked</option>
-              </select>
+                <div className="md:hidden">
+                  <button
+                    onClick={() => setIsOpen(true)}
+                    className="flex items-center gap-2 px-4 py-2 rounded-[25px] border border-blue-600 text-blue-600 font-medium text-sm hover:bg-blue-50 transition-all"
+                  >
+                    <span className="relative flex items-center gap-1">
+                      <span className="bg-blue-600 text-white text-[10px] px-1.5 py-0.5 rounded-full">
+                        {activeFilterCount}
+                      </span>
+                      <FiFilter className="text-blue-600 text-base" />
+                    </span>
+                    Filter
+                  </button>
+                </div>
+
+                <div className="md:hidden">
+                  <button
+                    onClick={() => setIsOpen(true)}
+                    className="flex items-center gap-2 px-4 py-2 rounded-[25px] border border-blue-600 text-blue-600 font-medium text-sm hover:bg-blue-50 transition-all"
+                  >
+                    10+ Years of experience
+                  </button>
+                </div>
+              </div>
             </div>
           </div>
 
@@ -262,7 +278,7 @@ export default function DoctorListingPage() {
             {selectedDoctor && (
               <div className="p-4">
                 <p className="text-lg font-semibold">
-                  {selectedDoctor.doctors[0].fullName}
+                  {selectedDoctor.doctors?.fullName}
                 </p>
                 <p className="text-gray-600">
                   {renderSpecialist(selectedDoctor.specialization, id)}

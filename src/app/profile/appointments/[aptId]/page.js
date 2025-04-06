@@ -82,24 +82,6 @@ export default function DoctorDetailsPage() {
       </div>
       <div className="bg-gray-100 min-h-screen">
         <div className="max-w-7xl mx-auto p-4">
-          <nav className="hidden md:flex text-sm text-gray-600 mb-4 mt-4">
-            <ul className="flex items-center space-x-2">
-              <li>
-                <Link href="/" className="hover:text-blue-600">
-                  Home
-                </Link>
-              </li>
-              <li>/</li>
-              <li>
-                <Link href="/doctors" className="hover:text-blue-600">
-                  Doctors
-                </Link>
-              </li>
-              <li>/</li>
-              <li className="text-blue-600 font-medium">{"doctor.name"}</li>
-            </ul>
-          </nav>
-
           <div className="">
             <div className="w-full bg-white rounded shadow border border-gray-300">
               <div className="flex items-center justify-between p-2 md:p-4">

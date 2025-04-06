@@ -40,7 +40,7 @@ export default function ProfilePage() {
       <div className="flex items-center justify-between px-4">
         <h2 className="text-lg font-semibold">Total 3</h2>
         <button
-          className="text-blue-600 text-base font-semibold hover:underline focus:outline-none"
+          className="cursor-pointer text-blue-600 text-base font-semibold hover:underline focus:outline-none"
           onClick={() => router.push("/profile/members/add-member")} // Replace with actual function
         >
           + Add

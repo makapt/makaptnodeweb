@@ -46,7 +46,6 @@ const ValidateNumber = ({ handlerNewUser, setMobile }) => {
   });
 
   const sendOTpHandler = async (data) => {
-    console.log("dataaaa", data);
     try {
       const res = await authFactory.signupOTP(data);
       setSentOTP(true);

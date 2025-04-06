@@ -108,7 +108,7 @@ const PaymentConfirmationPage = () => {
             onClick={() =>
               router.push(`/profile/appointments/${details?.appt_ID}`)
             }
-            className="w-full flex items-center justify-center bg-blue-600 text-white py-3 rounded-lg text-lg font-medium hover:bg-blue-700 transition"
+            className="cursor-pointer w-full flex items-center justify-center bg-blue-600 text-white py-3 rounded-lg text-lg font-medium hover:bg-blue-700 transition"
           >
             <FaCreditCard className="w-5 h-5 mr-2" /> View Details
           </button>

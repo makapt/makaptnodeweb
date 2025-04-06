@@ -79,10 +79,13 @@ const Profile = () => {
     return <div>Loading... </div>;
   }
   return (
-    <div>
-      <div className="mt-4 md:mt-0 mx-auto bg-white p-4 md:p-6 rounded-lg drop-shadow-lg">
+    <div className="px-4 py-4">
+      <div className="mt-2 md:mt-0 mx-auto bg-white p-4 md:p-6 rounded-lg drop-shadow-lg">
         <div className="flex gap-4 md:gap-6">
-          <div className="relative md:w-30 h-auto md:h-30 mb-4 md:mb-0">
+          <div
+            style={{ width: 112, height: 112 }}
+            className="relative md:w-30 h-auto md:h-30 mb-4 md:mb-0"
+          >
             <CacheImage
               path={profile.path}
               src={profile.data.image}
@@ -112,7 +115,6 @@ const Profile = () => {
             <p className="text-sm mb-1">
               Mob: {profile.data.mobile}{" "}
               {profile.data.email && "Email: " + profile.data.email}
-              {profile.data.email}
             </p>
             <p className="text-sm mb-1">
               Total Appointment: {profile.data.apptCount}

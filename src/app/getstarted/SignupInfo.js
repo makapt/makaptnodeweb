@@ -13,12 +13,13 @@ import { phoneRegExp } from "@/utils/regex";
 import authFactory from "../../actions/authAction";
 import DateOfBirthPicker from "@/components/ui/dateOfBirthPicker";
 import TextArea from "@/components/ui/textArea";
+import { useApplicationContext } from "@/context/ApplicationContext";
 
 const SignupInfo = ({ mobile }) => {
+  const { login } = useApplicationContext();
   const searchParams = useSearchParams();
   const redirectionURL = searchParams.get("redirectionURL");
-  console.log("redirectionURL", redirectionURL);
-
+  const [loader, setLoader] = useState(false);
   const [location, setLocation] = useState({});
 
   const { control, handleSubmit } = useForm({
@@ -52,24 +53,22 @@ const SignupInfo = ({ mobile }) => {
   };
 
   const onFormSubmit = async (data) => {
-    console.log("dataaaa", data);
-    console.log("location", location);
     const newData = {
       ...data,
       mobile: mobile,
       latlong: location,
     };
     console.log("newData", newData);
-    // try {
-    //   setLoader(true);
-    //   const res = await authFactory.createAccount(newData);
-    //   login(res.data.token);
-    // } catch (e) {
-    //   const error = e.response?.data?.message || e.toString();
-    //   setApiError({ error: true, message: error });
-    // } finally {
-    //   setLoader(false);
-    // }
+    try {
+      setLoader(true);
+      const res = await authFactory.createAccount(newData);
+      login(res.data.token, redirectionURL);
+    } catch (e) {
+      const error = e.response?.data?.message || e.toString();
+      setApiError({ error: true, message: error });
+    } finally {
+      setLoader(false);
+    }
   };
 
   return (
@@ -181,6 +180,7 @@ const SignupInfo = ({ mobile }) => {
       </div>
 
       <Button
+        isLoading={loader}
         className="mt-4 w-full bg-blue-600 text-white py-2 rounded-lg cursor-pointer"
         onClick={handleSubmit(onFormSubmit)}
       >

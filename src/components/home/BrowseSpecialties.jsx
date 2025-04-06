@@ -1,13 +1,23 @@
 import Link from "next/link";
 import homeFactory from "@/actions/homeAction";
 import { useEffect, useState } from "react";
+import CacheImage from "../ui/cacheImage";
+import ScreenLoader from "@/components/ui/ScreenLoader";
 
 export default function BrowseSpecialties({ selectedLocation }) {
   const [speData, setSpeData] = useState({ data: [] });
+  const [loader, setLoader] = useState(false);
 
   const fetchData = async () => {
-    const result = await homeFactory.getAllSpecialization(12, 0);
-    setSpeData(result.data);
+    try {
+      setLoader(true);
+      const result = await homeFactory.getAllSpecialization(12, 0);
+      setSpeData(result.data);
+    } catch (e) {
+      console.log("e", e);
+    } finally {
+      setLoader(false);
+    }
   };
 
   useEffect(() => {
@@ -18,7 +28,7 @@ export default function BrowseSpecialties({ selectedLocation }) {
     <section className="max-w-7xl mx-auto px-4 py-12">
       {/* Header */}
       <div className="flex justify-between items-center mb-8">
-        <h2 className="text-2xl sm:text-3xl font-semibold">
+        <h2 className="text-lg sm:text-2xl font-semibold">
           Browse by Specialties
         </h2>
         <Link href="/find-doctors">
@@ -27,7 +37,7 @@ export default function BrowseSpecialties({ selectedLocation }) {
           </button>
         </Link>
       </div>
-
+      {loader && <ScreenLoader />}
       {/* Grid Layout */}
       <div className="grid grid-cols-3 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-6 justify-items-center">
         {speData.data?.map((specialty, index) => (
@@ -36,13 +46,12 @@ export default function BrowseSpecialties({ selectedLocation }) {
               href={`doctors?type=specialization&address_line1=${selectedLocation.address_line1}&lat=${selectedLocation.lat}&lng=${selectedLocation.lon}&search=${specialty.name}&slug=${specialty.slugName}&id=${specialty._id}`}
               className="cursor-pointer"
             >
-              <div className="w-24 h-24 md:w-28 md:h-28 rounded-full overflow-hidden shadow-lg border-2 border-gray-200">
-                <img
-                  src={speData.path + specialty.image}
-                  alt={specialty.name}
-                  width={112}
-                  height={112}
-                  className="object-cover w-full h-full"
+              <div className="w-16 h-16 md:w-20 md:h-20 rounded-full overflow-hidden">
+                <CacheImage
+                  path={speData.path}
+                  src={specialty.image}
+                  width={120}
+                  height={120}
                 />
               </div>
               <p className="mt-3 text-center text-gray-800 text-sm md:text-base font-medium">

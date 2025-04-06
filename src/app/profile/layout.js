@@ -4,10 +4,10 @@ import { useState } from "react";
 import { mobileMenuItem } from "@/constants/menuItem";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { useApplicationContext } from "@/context/ApplicationContext";
+
+const excludedItems = ["Settings", "Home", "Find Doctors"];
 
 export default function Layout({ children }) {
-  const { handlerLogout } = useApplicationContext();
   const pathname = usePathname();
   const [activeItem, setActiveItem] = useState(pathname);
 
@@ -18,30 +18,23 @@ export default function Layout({ children }) {
         <h2 className="text-xl font-semibold">Profile Menu</h2>
         <nav>
           <ul className="space-y-2">
-            {mobileMenuItem.map((item, i) => (
-              <li key={i}>
-                <Link
-                  href={item.route}
-                  className={`block p-2 rounded transition-all ${
-                    activeItem === item.route
-                      ? "bg-blue-500 text-white font-semibold"
-                      : "hover:bg-gray-300"
-                  }`}
-                  onClick={() => setActiveItem(item.route)}
-                >
-                  {item.name}
-                </Link>
-              </li>
-            ))}
-            <li>
-              <Link
-                href="#"
-                onClick={handlerLogout}
-                className="block p-2 rounded transition-all hover:bg-gray-300"
-              >
-                Logout
-              </Link>
-            </li>
+            {mobileMenuItem
+              .filter((item) => !excludedItems.includes(item.name))
+              .map((item, i) => (
+                <li key={i}>
+                  <Link
+                    href={item.route}
+                    className={`block p-2 rounded transition-all ${
+                      activeItem === item.route
+                        ? "bg-blue-500 text-white font-semibold"
+                        : "hover:bg-gray-300"
+                    }`}
+                    onClick={() => setActiveItem(item.route)}
+                  >
+                    {item.name}
+                  </Link>
+                </li>
+              ))}
           </ul>
         </nav>
       </aside>

@@ -2,18 +2,30 @@ import React, { useEffect, useState } from "react";
 import Link from "next/link";
 import homeFactory from "@/actions/homeAction";
 import CacheImage from "@/components/ui/cacheImage";
+import ScreenLoader from "@/components/ui/ScreenLoader";
 
 export default function Specialization({ selectedLocation = {} }) {
+  const [loader, setLoader] = useState(false);
   const [speData, setSpeData] = useState({ data: [] });
   const [totalCount, setTotalCount] = useState(0);
   const [currentPage, setCurrentPage] = useState(1);
   const itemsPerPage = 12;
 
   const fetchData = async (page) => {
-    const offset = page - 1;
-    const result = await homeFactory.getAllSpecialization(itemsPerPage, offset);
-    setSpeData(result.data);
-    setTotalCount(result.data.total);
+    try {
+      if (speData.data.length === 0) setLoader(true);
+      const offset = page - 1;
+      const result = await homeFactory.getAllSpecialization(
+        itemsPerPage,
+        offset
+      );
+      setSpeData(result.data);
+      setTotalCount(result.data.total);
+    } catch (e) {
+      console.log("e", e);
+    } finally {
+      setLoader(false);
+    }
   };
 
   useEffect(() => {
@@ -28,7 +40,7 @@ export default function Specialization({ selectedLocation = {} }) {
           Browse by Specialties
         </h2>
       </div>
-
+      {loader && <ScreenLoader />}
       <div className="grid grid-cols-3 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-6 justify-items-center">
         {speData.data?.map((specialty, index) => (
           <div key={index} className="flex flex-col items-center">
@@ -36,7 +48,7 @@ export default function Specialization({ selectedLocation = {} }) {
               href={`doctors?type=specialization&address_line1=${selectedLocation.address_line1}&lat=${selectedLocation.lat}&lng=${selectedLocation.lon}&search=${specialty.name}&slug=${specialty.slugName}&id=${specialty._id}`}
               className="cursor-pointer"
             >
-              <div className="w-24 h-24 md:w-28 md:h-28 rounded-full overflow-hidden shadow-lg border-2 border-gray-200">
+              <div className="w-24 h-24 md:w-20 md:h-20 rounded-full overflow-hidden">
                 <CacheImage
                   path={speData.path}
                   src={specialty.image}

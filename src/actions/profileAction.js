@@ -2,6 +2,11 @@ import axiosInstance from "@/service/axiosInstance";
 
 const profileFactory = {};
 
+profileFactory.changePassword = async (data) => {
+  const response = await axiosInstance.post("change-password", data);
+  return response;
+};
+
 profileFactory.getProfile = async () => {
   const response = await axiosInstance.get("get-profile");
   return response;

@@ -1,8 +1,7 @@
 "use client";
 
 import { useCallback, useEffect, useState } from "react";
-import { useRouter } from "next/navigation"; // Import useRouter
-
+import { useRouter } from "next/navigation";
 import doctorFactory from "@/actions/doctorAction";
 import profileFactory from "@/actions/profileAction";
 import Members from "./section/members";
@@ -10,6 +9,7 @@ import LeftSection from "./section/LeftSection";
 import Link from "next/link";
 import appointmentFactory from "@/actions/appointmentAction";
 import { useSearchParams } from "next/navigation";
+import { FiLoader } from "react-icons/fi";
 
 export default function AppointmentSummery() {
   const router = useRouter();
@@ -28,11 +28,15 @@ export default function AppointmentSummery() {
     setDoctor(result.data);
     const members = await profileFactory.getMember();
     setMemberList(members.data);
-  }, [id]); // Dependencies to track
+  }, [id]);
 
   useEffect(() => {
     fetchData();
-  }, [fetchData]); // Now ESLint is happy
+  }, [fetchData]);
+
+  useEffect(() => {
+    loadRazorpayScript();
+  }, []);
 
   const loadRazorpayScript = () => {
     return new Promise((resolve) => {
@@ -85,10 +89,16 @@ export default function AppointmentSummery() {
   }
 
   const handlePayment = async () => {
+    if (btnClicked) return; // Prevent double-click
+
+    setBtnClicked(true); // ✅ Immediately disable the button
+
     let selectedMem = [...memberList.data];
     selectedMem = selectedMem.filter((item) => item.isDefault)[0];
+
     if (!selectedMem) {
       alert("Please select patient");
+      setBtnClicked(false); // Re-enable button
       return;
     }
 
@@ -104,70 +114,108 @@ export default function AppointmentSummery() {
       tax_service_charge: serviceFees(),
     };
 
-    await loadRazorpayScript(); // Ensure script is loaded
-    setBtnClicked(true);
-    const amount = serviceFees();
-    const response = await appointmentFactory.createOrder({
-      amount,
-      doctorId: id,
-    });
-    const { orderId } = response.data;
+    try {
+      const amount = serviceFees();
+      const response = await appointmentFactory.createOrder({
+        amount,
+        doctorId: id,
+      });
 
-    const options = {
-      key: "rzp_live_v0qd7mJRoytFGf", //"rzp_test_DjVr1Ol8Y7pYaK",
-      amount: amount,
-      currency: "INR",
-      name: "MAKAPT",
-      description: "Doctor Consultation Fee",
-      order_id: orderId,
-      handler: async function (response) {
-        console.log("response", response);
+      const { orderId } = response.data;
 
-        const { razorpay_payment_id, razorpay_order_id, razorpay_signature } =
-          response;
-        const token = generateToken();
-        try {
-          setLoader(true);
-          await appointmentFactory.verifyOrderCreateAppt({
-            paymentId: razorpay_payment_id,
-            orderId: razorpay_order_id,
-            signature: razorpay_signature,
-            ...payload,
-          });
-          router.push(
-            "/payment-confiramtion?status=success&oid=" +
-              razorpay_order_id +
-              "&token=" +
-              token
-          );
-        } catch (error) {
-          router.push(
-            "/payment-confiramtion?status=failed&oid=" +
-              razorpay_order_id +
-              "&token=" +
-              token
-          );
-        } finally {
-          setLoader(false);
-        }
-      },
-      prefill: {
-        name: "Patient Name",
-        email: "patient@example.com",
-        contact: "9999999999",
-      },
-      theme: {
-        color: "#fc9916",
-      },
-    };
+      const options = {
+        key: "rzp_test_DjVr1Ol8Y7pYaK",
+        amount: amount,
+        currency: "INR",
+        name: "MAKAPT",
+        description: "Doctor Consultation Fee",
+        order_id: orderId,
+        handler: async function (response) {
+          const { razorpay_payment_id, razorpay_order_id, razorpay_signature } =
+            response;
+          const token = generateToken();
 
-    const rzp = new window.Razorpay(options);
-    rzp.open();
+          try {
+            setLoader(true);
+            await appointmentFactory.verifyOrderCreateAppt({
+              paymentId: razorpay_payment_id,
+              orderId: razorpay_order_id,
+              signature: razorpay_signature,
+              ...payload,
+            });
+            router.push(
+              "/payment-confiramtion?status=success&oid=" +
+                razorpay_order_id +
+                "&token=" +
+                token
+            );
+          } catch (error) {
+            router.push(
+              "/payment-confiramtion?status=failed&oid=" +
+                razorpay_order_id +
+                "&token=" +
+                token
+            );
+          } finally {
+            setLoader(false);
+          }
+        },
+        modal: {
+          ondismiss: function () {
+            setBtnClicked(false);
+          },
+        },
+        prefill: {
+          name: "Patient Name",
+          email: "patient@example.com",
+          contact: "9999999999",
+        },
+        theme: {
+          color: "#fc9916",
+        },
+      };
+
+      const rzp = new window.Razorpay(options);
+      rzp.open();
+    } catch (error) {
+      console.error("Error during payment setup:", error);
+      setBtnClicked(false); // ✅ Re-enable button on failure
+    }
   };
+
+  useEffect(() => {
+    if (loader) {
+      document.body.style.overflow = "hidden";
+      document.documentElement.style.overflow = "hidden";
+    } else {
+      document.body.style.overflow = "";
+      document.documentElement.style.overflow = "";
+    }
+
+    return () => {
+      document.body.style.overflow = "";
+      document.documentElement.style.overflow = "";
+    };
+  }, [loader]);
 
   return (
     <div className="pt-14 relative min-h-screen bg-gray-100 p-4">
       {/* Main Content */}
+
+      {loader && (
+        <div
+          className="fixed inset-0 z-[9999] flex items-center justify-center"
+          style={{
+            backgroundColor: "oklch(0.97 0 0 / 0.77)",
+            overflow: "hidden",
+          }}
+        >
+          <div className="bg-white p-4 rounded-full shadow-md">
+            <FiLoader className="animate-spin text-2xl text-gray-700" />
+          </div>
+        </div>
+      )}
+
       {doctor && (
         <div className="max-w-5xl mx-auto mt-20 grid grid-cols-1 md:grid-cols-5 gap-6">
           {/* Doctor Profile Section (Left - 40%) */}
@@ -279,12 +327,23 @@ export default function AppointmentSummery() {
               </p>
             </div>
 
-            {/* Pay Button */}
             <button
               onClick={handlePayment}
-              className="cursor-pointer bg-blue-600 text-white px-4 py-2 rounded-lg w-full text-sm font-semibold mt-4 hover:bg-blue-700 transition-all"
+              disabled={btnClicked}
+              className={`cursor-pointer w-full text-sm font-semibold mt-4 px-4 py-2 rounded-lg transition-all flex items-center justify-center ${
+                btnClicked
+                  ? "bg-blue-300 cursor-not-allowed"
+                  : "bg-blue-600 hover:bg-blue-700 text-white"
+              }`}
             >
-              Pay ₹{serviceFees()} to Confirm Booking
+              {btnClicked ? (
+                <>
+                  <FiLoader className="animate-spin mr-2" />
+                  Processing Payment...
+                </>
+              ) : (
+                <>Pay ₹{serviceFees()} to Confirm Booking</>
+              )}
             </button>
           </div>
         </div>

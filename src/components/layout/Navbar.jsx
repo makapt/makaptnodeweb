@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { usePathname } from "next/navigation";
 import Link from "next/link";
 import Image from "next/image";
@@ -12,12 +12,28 @@ import { useRouter } from "next/navigation"; // Import useRouter
 import userAvatar from "@/assets/img/blank-profile-picture.png";
 import { useApplicationContext } from "@/context/ApplicationContext";
 import { menuItem, mobileMenuItem } from "@/constants/menuItem";
+import useDeviceType from "@/hooks/useDeviceType";
 
 const Navbar = () => {
   const router = useRouter();
+  const { isMobile } = useDeviceType();
   const { isLoggedInUser, accounts, handlerLogout } = useApplicationContext();
   const [showMobileMenu, setShowMobileMenu] = useState(false);
   const pathname = usePathname();
+
+  // Inside Navbar component, add:
+  const [showDropdown, setShowDropdown] = useState(false);
+  const dropdownRef = useRef(null);
+
+  useEffect(() => {
+    const handleClickOutside = (event) => {
+      if (dropdownRef.current && !dropdownRef.current.contains(event.target)) {
+        setShowDropdown(false);
+      }
+    };
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => document.removeEventListener("mousedown", handleClickOutside);
+  }, []);
 
   useEffect(() => {
     document.body.style.overflow = showMobileMenu ? "hidden" : "auto";
@@ -25,6 +41,14 @@ const Navbar = () => {
       document.body.style.overflow = "auto";
     };
   }, [showMobileMenu]);
+
+  const profileIconClick = () => {
+    if (isMobile) {
+      router.push("/profile");
+    } else {
+      setShowDropdown(!showDropdown);
+    }
+  };
 
   return (
     <header className="w-full fixed top-0 left-0 bg-white shadow-md z-50">
@@ -70,20 +94,55 @@ const Navbar = () => {
 
         <div className="relative flex items-center gap-4">
           {isLoggedInUser ? (
-            <div
-              onClick={() => router.push("/profile")}
-              className="relative flex items-center gap-2 cursor-pointer"
-            >
-              <Image
-                src={userAvatar}
-                alt="User Avatar"
-                width={40}
-                height={40}
-                className="rounded-full border border-gray-300"
-              />
-              <span className="hidden md:block text-gray-800 font-medium">
-                {accounts?.fullName}
-              </span>
+            <div className="relative" ref={dropdownRef}>
+              <div
+                id="user-icon"
+                onClick={profileIconClick}
+                className="relative flex items-center gap-2 cursor-pointer"
+              >
+                <Image
+                  src={userAvatar}
+                  alt="User Avatar"
+                  width={40}
+                  height={40}
+                  className="rounded-full border border-gray-300"
+                />
+                <span className="hidden md:block text-gray-800 font-medium">
+                  {accounts?.fullName}
+                </span>
+              </div>
+
+              {showDropdown && (
+                <div className="absolute right-0 mt-2 w-40 bg-white shadow-lg rounded-md overflow-hidden z-50">
+                  <button
+                    onClick={() => {
+                      router.push("/profile");
+                      setShowDropdown(false);
+                    }}
+                    className="cursor-pointer block w-full text-left px-4 py-2 hover:bg-gray-100"
+                  >
+                    Profile
+                  </button>
+                  <button
+                    onClick={() => {
+                      router.push("/settings/change-password");
+                      setShowDropdown(false);
+                    }}
+                    className="cursor-pointer block w-full text-left px-4 py-2 hover:bg-gray-100"
+                  >
+                    Settings
+                  </button>
+                  <button
+                    onClick={() => {
+                      handlerLogout();
+                      setShowDropdown(false);
+                    }}
+                    className="cursor-pointer block w-full text-left px-4 py-2 text-red-600 hover:bg-gray-100"
+                  >
+                    Logout
+                  </button>
+                </div>
+              )}
             </div>
           ) : (
             <Link
