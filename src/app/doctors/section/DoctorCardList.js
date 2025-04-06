@@ -16,12 +16,12 @@ export default function DoctorCardList({
   const redirectDetail = (doctor) => {
     if (isDesktop) {
       window.open(
-        `/doctors/${doctor.doctors[0].fullName}?type=doctor&id=${doctor.doctorId}`,
+        `/doctors/${doctor.doctors.fullName}?type=doctor&id=${doctor.doctorId}`,
         "_blank"
       );
     } else {
       router.push(
-        `/doctors/${doctor.doctors[0].fullName}?type=doctor&id=${doctor.doctorId}`
+        `/doctors/${doctor.doctors.fullName}?type=doctor&id=${doctor.doctorId}`
       );
     }
   };
