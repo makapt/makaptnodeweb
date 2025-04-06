@@ -1,41 +1,6 @@
 const moment = require("moment");
 export const businessName = "MAKAPT";
 
-const weekdays = [
-  { label: "Monday", value: 1 },
-  { label: "Tuesday", value: 2 },
-  { label: "Wednesday", value: 3 },
-  { label: "Thursday", value: 4 },
-  { label: "Friday", value: 5 },
-  { label: "Saturday", value: 6 },
-  { label: "Sunday", value: 0 },
-];
-
-const shortweekdays = [
-  { label: "Mon", value: 1 },
-  { label: "Tues", value: 2 },
-  { label: "Wed", value: 3 },
-  { label: "Thu", value: 4 },
-  { label: "Fri", value: 5 },
-  { label: "Sat", value: 6 },
-  { label: "Sun", value: 0 },
-];
-
-const monthNames = [
-  "Jan",
-  "Feb",
-  "March",
-  "Apr",
-  "May",
-  "June",
-  "July",
-  "Aug",
-  "Sep",
-  "Oct",
-  "Nov",
-  "Dec",
-];
-
 export const textLimit = (text, limit) => {
   if (text.length > limit) {
     let result = text.substr(0, limit);

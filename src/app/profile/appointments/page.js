@@ -72,7 +72,7 @@ export default function ProfilePage() {
   };
 
   return (
-    <div className="mt-8 md:mt-0">
+    <div className="px-4 py-4 mt-4 md:mt-0">
       <div className="flex gap-2 items-center justify-between mb-4 px-2 md:px-0">
         <h2 className="text-lg font-semibold ">Total: {apptList.total}</h2>
 

@@ -9,3 +9,11 @@ h2,
 h3 {
   font-family: "Montserrat", sans-serif; /* Headings */
 }
+.scrollbar-hide::-webkit-scrollbar {
+  display: none;
+}
+
+.scrollbar-hide {
+  -ms-overflow-style: none; /* IE and Edge */
+  scrollbar-width: none; /* Firefox */
+}

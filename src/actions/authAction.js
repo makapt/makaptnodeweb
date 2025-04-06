@@ -27,4 +27,9 @@ authFactory.accounts = async () => {
   return response;
 };
 
+authFactory.accountDelete = async () => {
+  const response = await axiosInstance.post("delete-account");
+  return response;
+};
+
 export default authFactory;
