@@ -4,7 +4,7 @@ import Navbar from "./Navbar";
 
 const Header = () => {
   return (
-    <div className="header-main" id="home">
+    <div className="mb-16 md:mb-20 header-main" id="home">
       {/* <ScrollTop /> */}
       <Navbar />
     </div>

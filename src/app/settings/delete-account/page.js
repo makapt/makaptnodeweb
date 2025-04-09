@@ -56,7 +56,7 @@ export default function DeleteAccountPage() {
   };
 
   return (
-    <div className="pt-18 md:pt-24 flex min-h-screen bg-gray-100">
+    <div className="flex min-h-screen bg-gray-100">
       {/* Sidebar */}
       <aside className="hidden md:flex w-64 bg-gray-200 text-gray-900 p-6 flex-col space-y-4 border-r border-gray-300">
         <h2 className="text-xl font-semibold">Settings</h2>
@@ -84,7 +84,7 @@ export default function DeleteAccountPage() {
       {/* Main Content */}
       <main className="flex-1 sm:p-6 rounded-lg shadow-md">
         <div className="bg-white w-full md:w-4/5">
-          <div className="p-4">
+          <div className="ml-4 mr-4 p-0 md:p-4">
             <button
               onClick={goBack}
               className="py-4 md:hidden flex items-center text-blue-600 hover:text-blue-800 text-md font-medium"

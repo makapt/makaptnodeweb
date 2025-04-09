@@ -18,7 +18,7 @@ const Footer = () => {
 
   return (
     <div
-      className="pt-10 px-4 md:px-20 lg:px-32 bg-gray-900 text-white w-full overflow-hidden border-t border-gray-800"
+      className="pt-8 px-4 md:px-20 lg:px-32 bg-gray-900 text-white w-full overflow-hidden border-t border-gray-800"
       id="Footer"
     >
       <div className="container mx-auto flex flex-col md:flex-row justify-between items-start gap-10">

@@ -21,7 +21,7 @@ const About = () => {
   }, []);
 
   return (
-    <div className="pt-24 bg-gray-50 text-gray-900">
+    <div className="bg-gray-50 text-gray-900">
       {/* Header Section */}
       <div className="bg-blue-600 text-white py-20 text-center">
         <h1 className="text-4xl font-bold">About Us</h1>

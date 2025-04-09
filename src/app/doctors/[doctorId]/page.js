@@ -20,17 +20,20 @@ export default function DoctorDetailsPage() {
   const { isMobile, isDesktop } = useDeviceType();
   const router = useRouter();
   const { doctorId } = useParams();
-  const [doctor, setDoctor] = useState(null);
+  const [doctor, setDoctor] = useState({ path: "" });
   const [schedules, setSchedules] = useState([]);
   const [selectedTab, setSelectedTab] = useState(0);
   const [textlimit, setTextlimit] = useState(30);
   const [isredmore, setIsredmore] = useState(false);
+
+  const [loader, setLoader] = useState(false);
 
   const searchParams = useSearchParams();
   const id = searchParams.get("id");
 
   const fetchData = useCallback(async () => {
     try {
+      setLoader(true);
       const result = await doctorFactory.doctordetail({ id });
 
       if (!result?.data) return; // Prevent errors if API response is undefined
@@ -49,6 +52,8 @@ export default function DoctorDetailsPage() {
       }
     } catch (error) {
       console.error("Error fetching doctor details:", error);
+    } finally {
+      setLoader(false);
     }
   }, [id]);
 
@@ -68,7 +73,7 @@ export default function DoctorDetailsPage() {
       router.push(`/getstarted?${queryParams.toString()}`);
     }
   };
-  if (!doctor) return <p>Loading...</p>;
+  // if (!doctor) return <p>Loading...</p>;
 
   const handleAbout = (about) => {
     let newword = "";
@@ -100,64 +105,142 @@ export default function DoctorDetailsPage() {
   };
 
   return (
-    <div className="pt-16 md:pt-20 bg-white md:bg-gray-100 min-h-screen">
-      <div className="max-w-7xl mx-auto p-4">
-        <nav className="text-sm text-gray-600 mb-4 mt-0 md:mt-4">
-          <ul className="flex items-center space-x-2">
-            <li>
-              <Link href="/" className="hover:text-blue-600">
-                Home
-              </Link>
-            </li>
-            <li>/</li>
-            <li>
-              <button
-                onClick={() => router.back()}
-                className="cursor-pointer hover:text-blue-600"
-              >
-                Doctors
-              </button>
-            </li>
-            <li>/</li>
-            <li className="text-blue-600 font-medium">
-              {decodeURIComponent(doctorId)}
-            </li>
-          </ul>
-        </nav>
+    <div className="bg-white md:bg-gray-100 min-h-screen">
+      {loader && (
+        <>
+          <div className="flex gap-4 p-4 max-w-md mx-auto">
+            <div className="w-16 h-16 bg-gray-300 rounded-full animate-pulse" />
+            <div className="space-y-2 flex-1">
+              <div className="h-4 bg-gray-300 rounded w-full animate-pulse" />
+              <div className="h-4 bg-gray-300 rounded w-full animate-pulse" />
+              <div className="h-4 bg-gray-300 rounded w-2/3 animate-pulse" />
+            </div>
+          </div>
+          <div className="space-y-4 p-4 max-w-md mx-auto">
+            <div className="h-8 bg-gray-300 rounded w-full animate-pulse" />
+            <div className="h-4 bg-gray-300 rounded w-full animate-pulse" />
+            <div className="h-6 bg-gray-300 rounded w-2/3 animate-pulse" />
+          </div>
+        </>
+      )}
+      {doctor.data && (
+        <div className="max-w-7xl mx-auto p-4">
+          <nav className="text-sm text-gray-600 mb-4 mt-0 md:mt-4">
+            <ul className="flex items-center space-x-2">
+              <li>
+                <Link href="/" className="hover:text-blue-600">
+                  Home
+                </Link>
+              </li>
+              <li>/</li>
+              <li>
+                <button
+                  onClick={() => router.back()}
+                  className="cursor-pointer hover:text-blue-600"
+                >
+                  Doctors
+                </button>
+              </li>
+              <li>/</li>
+              <li className="text-blue-600 font-medium">
+                {decodeURIComponent(doctorId)}
+              </li>
+            </ul>
+          </nav>
 
-        {/* Main Container */}
-        <div className="flex flex-col md:flex-row gap-6">
-          <div className="w-full md:w-[65%] bg-white md:p-6 md:rounded md:shadow md:border md:border-gray-300">
-            <div className="w-full flex items-center gap-4">
-              <CacheImage
-                path={doctor.path}
-                src={doctor.data.image}
-                width={isMobile ? 80 : 120}
-                height={isMobile ? 80 : 120}
-              />
+          <div className="flex flex-col md:flex-row gap-6">
+            <div className="w-full md:w-[65%] bg-white md:p-6 md:rounded md:shadow md:border md:border-gray-300">
+              <div className="w-full flex items-center gap-4">
+                <CacheImage
+                  path={doctor.path}
+                  src={doctor.data.image}
+                  width={isMobile ? 80 : 120}
+                  height={isMobile ? 80 : 120}
+                />
 
-              <div className="w-full">
-                <div className="flex justify-between items-start">
-                  <h1 className="text-md md:text-2xl font-semibold">
-                    {doctor.data.fullName}
-                  </h1>
-                  <FaShareAlt
-                    onClick={handleCopyText}
-                    className="w-5 h-5 text-gray-600 cursor-pointer hover:text-blue-600"
-                  />
+                <div className="w-full">
+                  <div className="flex justify-between items-start">
+                    <h1 className="text-md md:text-2xl font-semibold">
+                      {doctor.data.fullName}
+                    </h1>
+                    <FaShareAlt
+                      onClick={handleCopyText}
+                      className="w-5 h-5 text-gray-600 cursor-pointer hover:text-blue-600"
+                    />
+                  </div>
+                  <p className="text-sm md:text-lg font-medium">
+                    {renderSpecialist(doctor.data.specialization)}
+                  </p>
+                  <p className="text-gray-600 text-sm md:text-lg font-medium">
+                    {renderEducation(doctor.data.educations)}
+                  </p>
+                  <p className="text-gray-600 text-sm md:text-lg">
+                    Experience: {doctor.data.workExperience} years
+                  </p>
                 </div>
-                <p className="text-sm md:text-lg font-medium">
-                  {renderSpecialist(doctor.data.specialization)}
-                </p>
-                <p className="text-gray-600 text-sm md:text-lg font-medium">
-                  {renderEducation(doctor.data.educations)}
-                </p>
-                <p className="text-gray-600 text-sm md:text-lg">
-                  Experience: {doctor.data.workExperience} years
-                </p>
+              </div>
+              <div className="block md:hidden mt-6">
+                <Schedule
+                  schedules={schedules}
+                  doctor={doctor}
+                  selectedTab={selectedTab}
+                  setSelectedTab={setSelectedTab}
+                  handleConfirmAppointment={handleConfirmAppointment}
+                />
+              </div>
+
+              {/* About Section */}
+              <div className="mt-6 p-4 border border-gray-200 rounded-lg shadow-sm">
+                <h2 className="text-xl font-semibold">About</h2>
+                <div
+                  className="text-sm text-gray-700 mt-2"
+                  dangerouslySetInnerHTML={{
+                    __html: handleAbout(doctor.data.about),
+                  }}
+                />
+                <div
+                  className="text-sm font-bold mt-4 text-[#6b45c6] border-b border-[#6b45c6] inline-block cursor-pointer hover:opacity-80"
+                  onClick={readMore}
+                >
+                  {isredmore ? "Show Less" : "Read More"}
+                </div>
+              </div>
+
+              <div className="mt-6 p-4 border border-gray-200 rounded-lg shadow-sm">
+                <h2 className="text-xl font-semibold flex items-center gap-2">
+                  <FaUserMd className="text-blue-500" /> Education & Training
+                </h2>
+                <ul className="text-gray-700 mt-2 list-disc list-inside">
+                  {doctor.data.educations.map((edu, index) => (
+                    <li key={index}>
+                      <strong>{edu.degree}</strong>
+                    </li>
+                  ))}
+                </ul>
+              </div>
+
+              <div className="mt-6 p-4 border border-gray-200 rounded-lg shadow-sm">
+                <h2 className="text-xl font-semibold flex items-center gap-2">
+                  <FaHospital className="text-green-500" /> Experience
+                </h2>
+                <ul className="text-gray-700 mt-2 list-disc list-inside">
+                  {doctor.data.experiences.map((exp, index) => (
+                    <li key={index}>
+                      <strong>{exp.title}</strong> at {exp.clinicName}
+                    </li>
+                  ))}
+                </ul>
+              </div>
+
+              <div className="mt-6 p-4 border border-gray-200 rounded-lg shadow-sm">
+                <h2 className="text-xl font-semibold flex items-center gap-2">
+                  <FaLanguage className="text-purple-500" /> Languages Spoken
+                </h2>
+                <p className="text-gray-700 mt-2">Hindi, English</p>
               </div>
             </div>
-            <div className="block md:hidden mt-6">
+
+            {isDesktop && (
               <Schedule
                 schedules={schedules}
                 doctor={doctor}
@@ -165,70 +248,10 @@ export default function DoctorDetailsPage() {
                 setSelectedTab={setSelectedTab}
                 handleConfirmAppointment={handleConfirmAppointment}
               />
-            </div>
-
-            {/* About Section */}
-            <div className="mt-6 p-4 border border-gray-200 rounded-lg shadow-sm">
-              <h2 className="text-xl font-semibold">About</h2>
-              <div
-                className="text-sm text-gray-700 mt-2"
-                dangerouslySetInnerHTML={{
-                  __html: handleAbout(doctor.data.about),
-                }}
-              />
-              <div
-                className="text-sm font-bold mt-4 text-[#6b45c6] border-b border-[#6b45c6] inline-block cursor-pointer hover:opacity-80"
-                onClick={readMore}
-              >
-                {isredmore ? "Show Less" : "Read More"}
-              </div>
-            </div>
-
-            <div className="mt-6 p-4 border border-gray-200 rounded-lg shadow-sm">
-              <h2 className="text-xl font-semibold flex items-center gap-2">
-                <FaUserMd className="text-blue-500" /> Education & Training
-              </h2>
-              <ul className="text-gray-700 mt-2 list-disc list-inside">
-                {doctor.data.educations.map((edu, index) => (
-                  <li key={index}>
-                    <strong>{edu.degree}</strong>
-                  </li>
-                ))}
-              </ul>
-            </div>
-
-            <div className="mt-6 p-4 border border-gray-200 rounded-lg shadow-sm">
-              <h2 className="text-xl font-semibold flex items-center gap-2">
-                <FaHospital className="text-green-500" /> Experience
-              </h2>
-              <ul className="text-gray-700 mt-2 list-disc list-inside">
-                {doctor.data.experiences.map((exp, index) => (
-                  <li key={index}>
-                    <strong>{exp.title}</strong> at {exp.clinicName}
-                  </li>
-                ))}
-              </ul>
-            </div>
-
-            <div className="mt-6 p-4 border border-gray-200 rounded-lg shadow-sm">
-              <h2 className="text-xl font-semibold flex items-center gap-2">
-                <FaLanguage className="text-purple-500" /> Languages Spoken
-              </h2>
-              <p className="text-gray-700 mt-2">Hindi, English</p>
-            </div>
+            )}
           </div>
-
-          {isDesktop && (
-            <Schedule
-              schedules={schedules}
-              doctor={doctor}
-              selectedTab={selectedTab}
-              setSelectedTab={setSelectedTab}
-              handleConfirmAppointment={handleConfirmAppointment}
-            />
-          )}
         </div>
-      </div>
+      )}
     </div>
   );
 }

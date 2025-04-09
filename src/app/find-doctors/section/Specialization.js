@@ -34,7 +34,7 @@ export default function Specialization({ selectedLocation = {} }) {
 
   const totalPages = Math.ceil(totalCount / itemsPerPage);
   return (
-    <section className="max-w-7xl mx-auto px-4">
+    <section className="max-w-7xl mx-auto">
       <div className="flex justify-between items-center mb-8">
         <h2 className="text-2xl sm:text-3xl font-semibold">
           Browse by Specialties

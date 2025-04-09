@@ -12,7 +12,7 @@ export default function Layout({ children }) {
   const [activeItem, setActiveItem] = useState(pathname);
 
   return (
-    <div className="pt-16 md:pt-24 flex min-h-screen bg-gray-100">
+    <div className="flex min-h-screen bg-gray-100">
       {/* Sidebar */}
       <aside className="hidden md:flex w-64 bg-gray-200 text-gray-900 p-6 flex-col space-y-4 border-r border-gray-300">
         <h2 className="text-xl font-semibold">Profile Menu</h2>
