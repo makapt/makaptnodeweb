@@ -38,7 +38,7 @@ const Contact = () => {
 
   return (
     <div
-      className="pt-24 text-center p-14 lg:px-32 w-full overflow-hidden"
+      className="text-center p-14 lg:px-32 w-full overflow-hidden"
       id="Contact"
     >
       <h1 className="text-2xl sm:text-4xl font-bold mb-6 mt-8">

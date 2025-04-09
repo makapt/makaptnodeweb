@@ -25,7 +25,7 @@ export default function FindDoctor() {
 
   return (
     <>
-      <div className="pt-16 md:pt-20">
+      <div className="">
         <div className="w-full p-4 block md:hidden">
           <SearchBar />
         </div>

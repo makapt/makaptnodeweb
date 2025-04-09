@@ -45,7 +45,7 @@ const OurService = () => {
       </Head>
 
       {/* Hero Section */}
-      <section className="pt-24 bg-blue-600 text-white text-center py-16 px-8">
+      <section className="bg-blue-600 text-white text-center py-16 px-8">
         <h1 className="text-4xl mt-8 font-bold">Welcome to Makapt Services</h1>
         <p className="mt-4 text-lg">
           Your trusted partner for professional and reliable solutions.

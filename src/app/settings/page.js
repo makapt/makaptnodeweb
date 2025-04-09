@@ -13,7 +13,7 @@ const SettingsLayout = ({ children }) => {
   const pathname = usePathname();
 
   return (
-    <div className="pt-24 pb-6 container mx-auto md:px-20 lg:px-32 w-full overflow-hidden">
+    <div className="pt-6 pb-6 container mx-auto md:px-20 lg:px-32 w-full overflow-hidden">
       <div className="flex flex-col md:flex-row w-full gap-4">
         <div className="block md:hidden bg-white shadow-sm border-b border-gray-200">
           {settingsOptions.map((item) => (

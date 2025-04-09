@@ -38,7 +38,7 @@ export default function ProfilePage() {
   return (
     <div className="mt-6 md:mt-0">
       <div className="flex items-center justify-between px-4">
-        <h2 className="text-lg font-semibold">Total 3</h2>
+        <h2 className="text-lg font-semibold">Total {memberList?.total}</h2>
         <button
           className="cursor-pointer text-blue-600 text-base font-semibold hover:underline focus:outline-none"
           onClick={() => router.push("/profile/members/add-member")} // Replace with actual function

@@ -2,10 +2,8 @@
 
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
-import Image from "next/image";
 import { FaCalendarAlt, FaUser, FaMapMarkerAlt } from "react-icons/fa";
 import appointmentFactory from "@/actions/appointmentAction";
-import appMockup from "@/assets/img/blank-profile-picture.png";
 import Link from "next/link";
 import CacheImage from "@/components/ui/cacheImage";
 import ScreenLoader from "@/components/ui/ScreenLoader";
@@ -15,11 +13,12 @@ export default function ProfilePage() {
   const router = useRouter();
   const [apptList, setApptList] = useState({ data: [], total: 0 });
   const [currentPage, setCurrentPage] = useState(1);
-  const [sortBy, setSortBy] = useState("none");
+  const [sortBy, setSortBy] = useState();
   const [loader, setLoader] = useState(false);
   const itemsPerPage = 12;
 
   const fetchData = async (page) => {
+    setApptList({ data: [], total: 0 });
     setLoader(true);
     const offset = page - 1;
     const result = await appointmentFactory.getAppointments({
@@ -86,9 +85,7 @@ export default function ProfilePage() {
           onChange={sortByHandler}
           className="md:w-auto border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
         >
-          <option value="" disabled>
-            Select Status
-          </option>
+          <option value="">All</option>
           <option value="pending">Pending</option>
           <option value="completed">Completed</option>
           <option value="cancelled">Cancelled</option>

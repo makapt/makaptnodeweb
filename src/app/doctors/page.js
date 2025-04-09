@@ -105,7 +105,7 @@ export default function DoctorListingPage() {
   };
 
   return (
-    <div className="pt-16 md:pt-20 bg-white md:bg-gray-100 min-h-screen">
+    <div className="bg-white md:bg-gray-100 min-h-screen">
       <div className="max-w-7xl mx-auto p-4 ">
         <div className="flex gap-4 bg-white">
           <aside className="hidden md:block w-1/4 bg-white p-4 rounded   sticky top-4 h-fit">
