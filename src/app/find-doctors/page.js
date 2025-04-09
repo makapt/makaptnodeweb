@@ -6,8 +6,11 @@ import Link from "next/link";
 import Specialization from "./section/Specialization";
 import HomeSearchBox from "@/components/home/section/HomeSearchBox";
 import homeFactory from "@/actions/homeAction";
+import SearchBar from "@/components/mobileSearchBar/SearchBar";
+import useDeviceType from "@/hooks/useDeviceType";
 
 export default function FindDoctor() {
+  const { isMobile } = useDeviceType();
   const [selectedLocation, setSelectedLocation] = useState({});
   const [speData, setSpeData] = useState({ data: [] });
 
@@ -22,30 +25,24 @@ export default function FindDoctor() {
 
   return (
     <>
-      <Head>
-        <title>Find a Doctor | Book Appointments Online</title>
-        <meta
-          name="description"
-          content="Find top-rated doctors and book appointments easily."
-        />
-      </Head>
+      <div className="pt-16 md:pt-20">
+        <div className="w-full p-4 block md:hidden">
+          <SearchBar />
+        </div>
 
-      <div className="pt-20">
-        {/* 🔹 Banner Section */}
         <div
           className="relative bg-cover bg-center text-center text-white"
           style={{
-            backgroundImage:
-              "linear-gradient(120deg, #005cbf 0%, #396cf000 100%), url('/2.png')",
-            height: "380px",
+            backgroundImage: isMobile
+              ? "url('/2.png')"
+              : "linear-gradient(120deg, #005cbf 0%, #396cf000 100%), url('/2.png')",
           }}
         >
-          <div className="relative z-10 flex flex-col items-center h-full">
+          <div className="hidden md:flex relative z-10   flex-col items-center h-full">
             <h2 className="text-3xl sm:text-3xl md:text-5xl font-semibold max-w-3xl mt-10">
               Find the Best Doctors & Book Instantly
             </h2>
 
-            {/* 🔹 Search Box */}
             <div className="absolute bottom-[55px] md:bottom-[80px] w-full flex justify-center px-4">
               <HomeSearchBox
                 selectedLocation={selectedLocation}
@@ -81,7 +78,7 @@ export default function FindDoctor() {
           </aside>
 
           {/* 🔹 Main Content */}
-          <main className="w-full md:w-3/4 bg-white p-4 rounded shadow">
+          <main className="w-full md:w-3/4 bg-white p-0 md:p-4 rounded shadow-none md:shadow">
             <Specialization selectedLocation={selectedLocation} />
           </main>
         </div>

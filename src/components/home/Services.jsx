@@ -31,7 +31,7 @@ export const serviceData = [
 const Services = () => {
   return (
     <div
-      className="container mx-auto p-14 md:px-20 lg:px-32 w-full overflow-hidden"
+      className="container mx-auto p-4 md:p-14 md:px-20 lg:px-32 w-full overflow-hidden"
       id="Services"
     >
       <h1 className="text-2xl sm:text-4xl font-bold mb-2 text-center">
@@ -47,7 +47,7 @@ const Services = () => {
         {serviceData.slice(0, 3).map((project, index) => (
           <div
             key={index}
-            className="max-w-[320px] border border-gray-200 shadow-lg rounded px-8 py-12 text-center"
+            className="max-w-[320px] border border-gray-200 shadow-lg rounded px-4 py-8 md:px-8 md:py-12 text-center"
           >
             <Image
               src={project.image}

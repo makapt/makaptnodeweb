@@ -76,7 +76,7 @@ export default function HomeSearchBox({
   useEffect(() => {
     getCurrentLatLong();
     setSearchValue(search);
-  }, [getCurrentLatLong, search]); // ✅ Add dependencies
+  }, [getCurrentLatLong, search]);
 
   const getAddressFromCoordinates = async (lat, lng) => {
     const url = `https://nominatim.openstreetmap.org/reverse?format=json&lat=${lat}&lon=${lng}`;

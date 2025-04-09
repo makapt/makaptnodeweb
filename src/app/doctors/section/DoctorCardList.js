@@ -46,11 +46,7 @@ export default function DoctorCardList({
           onClick={() => redirectDetail(doctor)}
           className="cursor-pointer flex flex-col flex-grow w-full"
         >
-          <a
-            // target="_blank"
-            // href={`/doctors/${doctor.doctors[0].fullName}?type=doctor&id=${doctor.doctorId}`}
-            className="text-base font-bold text-[color:#121414] hover:underline"
-          >
+          <a className="text-base font-bold text-[color:#121414] hover:underline">
             {doctor.doctors.fullName}
           </a>
 
@@ -100,13 +96,13 @@ export default function DoctorCardList({
         </div>
       </div>
       <div className="flex flex-row items-center justify-between gap-2 mt-2">
-        <p className="text-sm font-bold text-blue-700 px-2 py-1">
+        <p className="text-xs font-bold text-blue-700 px-2 py-1">
           Consult Fee: ₹{doctor?.doctor_financials?.[0]?.normalFee}
         </p>
 
         <button
           onClick={() => handleBookAppointment(doctor)}
-          className="bg-blue-600 text-sm text-white px-4 py-2 rounded cursor-pointer"
+          className="bg-blue-600 text-xs text-white px-4 py-2 rounded cursor-pointer"
         >
           Book Appointment
         </button>

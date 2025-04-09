@@ -13,6 +13,7 @@ import { useApplicationContext } from "@/context/ApplicationContext";
 import CacheImage from "@/components/ui/cacheImage";
 import useDeviceType from "@/hooks/useDeviceType";
 import Schedule from "./schedule";
+import toast from "react-hot-toast";
 
 export default function DoctorDetailsPage() {
   const { isLoggedInUser } = useApplicationContext();
@@ -89,10 +90,19 @@ export default function DoctorDetailsPage() {
     }
   };
 
+  const handleCopyText = async () => {
+    try {
+      await navigator.clipboard.writeText(window.location.href);
+      toast.success("Copied to clipboard!");
+    } catch (err) {
+      toast.error("Failed to copy");
+    }
+  };
+
   return (
-    <div className="pt-20 bg-gray-100 min-h-screen">
+    <div className="pt-16 md:pt-20 bg-white md:bg-gray-100 min-h-screen">
       <div className="max-w-7xl mx-auto p-4">
-        <nav className="text-sm text-gray-600 mb-4 mt-4">
+        <nav className="text-sm text-gray-600 mb-4 mt-0 md:mt-4">
           <ul className="flex items-center space-x-2">
             <li>
               <Link href="/" className="hover:text-blue-600">
@@ -117,9 +127,7 @@ export default function DoctorDetailsPage() {
 
         {/* Main Container */}
         <div className="flex flex-col md:flex-row gap-6">
-          {/* Left Section - Doctor Info */}
-          <div className="w-full md:w-[65%] bg-white p-6 rounded shadow border border-gray-300">
-            {/* Doctor Image & Details */}
+          <div className="w-full md:w-[65%] bg-white md:p-6 md:rounded md:shadow md:border md:border-gray-300">
             <div className="w-full flex items-center gap-4">
               <CacheImage
                 path={doctor.path}
@@ -133,7 +141,10 @@ export default function DoctorDetailsPage() {
                   <h1 className="text-md md:text-2xl font-semibold">
                     {doctor.data.fullName}
                   </h1>
-                  <FaShareAlt className="w-5 h-5 text-gray-600 cursor-pointer hover:text-blue-600" />
+                  <FaShareAlt
+                    onClick={handleCopyText}
+                    className="w-5 h-5 text-gray-600 cursor-pointer hover:text-blue-600"
+                  />
                 </div>
                 <p className="text-sm md:text-lg font-medium">
                   {renderSpecialist(doctor.data.specialization)}

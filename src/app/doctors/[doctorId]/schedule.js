@@ -8,7 +8,7 @@ export default function Schedule({
   handleConfirmAppointment,
 }) {
   return (
-    <aside className="w-full md:w-[35%] bg-white p-6 rounded shadow border border-gray-300 h-fit">
+    <aside className="w-full md:w-[35%] bg-white p-4 rounded shadow border border-gray-300 h-fit">
       <div className="pb-2 relative border-b border-gray-300 bg-white flex items-center justify-between">
         <h2 className="text-md md:text-lg font-bold">Book Appointment</h2>
         <p className="font-bold text-md md:text-lg">

@@ -11,7 +11,11 @@ import menu_icon from "@/assets/menu_icon.svg";
 import { useRouter } from "next/navigation"; // Import useRouter
 import userAvatar from "@/assets/img/blank-profile-picture.png";
 import { useApplicationContext } from "@/context/ApplicationContext";
-import { menuItem, mobileMenuItem } from "@/constants/menuItem";
+import {
+  menuItem,
+  mobileMenuItem,
+  mobileMenuWithoutLogout,
+} from "@/constants/menuItem";
 import useDeviceType from "@/hooks/useDeviceType";
 
 const Navbar = () => {
@@ -19,6 +23,9 @@ const Navbar = () => {
   const { isMobile } = useDeviceType();
   const { isLoggedInUser, accounts, handlerLogout } = useApplicationContext();
   const [showMobileMenu, setShowMobileMenu] = useState(false);
+
+  const menuitemmob = isLoggedInUser ? mobileMenuItem : mobileMenuWithoutLogout;
+
   const pathname = usePathname();
 
   // Inside Navbar component, add:
@@ -51,8 +58,8 @@ const Navbar = () => {
   };
 
   return (
-    <header className="w-full fixed top-0 left-0 bg-white shadow-md z-50">
-      <div className="max-w-7xl mx-auto flex justify-between items-center py-4 px-6 md:px-10 lg:px-20">
+    <header className="w-full fixed top-0 left-0 bg-white shadow-md z-50 h-16 md:h-20">
+      <div className="max-w-7xl mx-auto flex justify-between items-center h-full px-6 md:px-10 lg:px-20">
         <div className="flex items-center gap-8">
           <Image
             onClick={() => setShowMobileMenu(true)}
@@ -177,7 +184,7 @@ const Navbar = () => {
         </div>
 
         <ul className="space-y-4">
-          {mobileMenuItem.map((item, i) => (
+          {menuitemmob.map((item, i) => (
             <li
               key={i}
               onClick={() => {

@@ -199,7 +199,7 @@ export default function AppointmentSummery() {
   }, [loader]);
 
   return (
-    <div className="pt-14 relative min-h-screen bg-gray-100 p-4">
+    <div className="pt-16 md:pt-20 relative min-h-screen bg-gray-100 p-4">
       {/* Main Content */}
 
       {loader && (
@@ -217,12 +217,12 @@ export default function AppointmentSummery() {
       )}
 
       {doctor && (
-        <div className="max-w-5xl mx-auto mt-20 grid grid-cols-1 md:grid-cols-5 gap-6">
+        <div className="max-w-5xl mx-auto mt-4 grid grid-cols-1 md:grid-cols-5 gap-6">
           {/* Doctor Profile Section (Left - 40%) */}
           <LeftSection doctor={doctor} apptdate={apptdate} />
 
           {/* Right Side - Select Member & Other Info (60%) */}
-          <div className="bg-white p-6 rounded shadow-md md:col-span-3">
+          <div className="bg-white p-4 rounded shadow-md md:col-span-3">
             {/* Select Member Section */}
             <div className="mb-4">
               <h3 className="text-lg font-semibold mb-2">Select Member</h3>

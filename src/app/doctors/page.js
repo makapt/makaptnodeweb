@@ -13,6 +13,7 @@ import DoctorCardList from "./section/DoctorCardList";
 import { formatSchedule, renderSpecialist } from "../../utils/helper";
 import { useApplicationContext } from "@/context/ApplicationContext";
 import { FiFilter } from "react-icons/fi";
+import SearchBar from "@/components/mobileSearchBar/SearchBar";
 
 export default function DoctorListingPage() {
   const { isLoggedInUser } = useApplicationContext();
@@ -104,7 +105,7 @@ export default function DoctorListingPage() {
   };
 
   return (
-    <div className="pt-24 bg-gray-100 min-h-screen">
+    <div className="pt-16 md:pt-20 bg-white md:bg-gray-100 min-h-screen">
       <div className="max-w-7xl mx-auto p-4 ">
         <div className="flex gap-4 bg-white">
           <aside className="hidden md:block w-1/4 bg-white p-4 rounded   sticky top-4 h-fit">
@@ -115,6 +116,9 @@ export default function DoctorListingPage() {
           </aside>
 
           {/* Main Section */}
+          <div className="w-full p-0 md:p-4  block md:hidden">
+            <SearchBar />
+          </div>
           <SeachBar />
         </div>
       </div>
@@ -187,7 +191,7 @@ export default function DoctorListingPage() {
         </aside>
 
         {/* Main Section */}
-        <main className="w-full md:w-3/4 space-y-4 bg-white p-4 rounded shadow">
+        <main className="w-full md:w-3/4 space-y-4 bg-white p-0 md:p-4 rounded shadow-none md:shadow">
           <Breadcrumb />
 
           {/* Heading & Sort Option */}
@@ -261,7 +265,11 @@ export default function DoctorListingPage() {
           ></div>
 
           {/* Drawer - On Top of Everything */}
-          <div className="fixed top-0 right-0 h-full w-96 bg-white border border-gray-300 transition-transform transform translate-x-0 z-[70]">
+          <div
+            className={`fixed top-0 right-0 h-full w-full max-w-[384px] bg-white border border-gray-300 transition-transform duration-300 transform ${
+              isDrawerOpen ? "translate-x-0" : "translate-x-full"
+            } z-[70]`}
+          >
             {/* Header */}
             <div className="relative p-4 border-b border-gray-300 bg-white flex items-center">
               <button

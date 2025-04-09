@@ -45,3 +45,12 @@ export const mobileMenuItem = [
     icon: <FiSettings className="mr-3" />,
   },
 ];
+
+export const mobileMenuWithoutLogout = [
+  { name: "Home", route: "/", icon: <FiHome className="mr-3" /> },
+  {
+    name: "Find Doctors",
+    route: "/find-doctors",
+    icon: <FiUser className="mr-3" />,
+  },
+];

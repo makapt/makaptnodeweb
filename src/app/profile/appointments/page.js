@@ -15,6 +15,7 @@ export default function ProfilePage() {
   const router = useRouter();
   const [apptList, setApptList] = useState({ data: [], total: 0 });
   const [currentPage, setCurrentPage] = useState(1);
+  const [sortBy, setSortBy] = useState("none");
   const [loader, setLoader] = useState(false);
   const itemsPerPage = 12;
 
@@ -24,6 +25,7 @@ export default function ProfilePage() {
     const result = await appointmentFactory.getAppointments({
       limit: itemsPerPage,
       page: offset,
+      apptType: sortBy,
     });
     setApptList(result.data);
     setLoader(false);
@@ -31,7 +33,7 @@ export default function ProfilePage() {
 
   useEffect(() => {
     fetchData(currentPage);
-  }, [currentPage]);
+  }, [currentPage, sortBy]);
 
   const totalPages = Math.ceil(apptList.total / itemsPerPage);
 
@@ -71,19 +73,23 @@ export default function ProfilePage() {
     );
   };
 
+  const sortByHandler = (e) => {
+    setSortBy(e.target.value);
+  };
+
   return (
     <div className="px-4 py-4 mt-4 md:mt-0">
       <div className="flex gap-2 items-center justify-between mb-4 px-2 md:px-0">
         <h2 className="text-lg font-semibold ">Total: {apptList.total}</h2>
 
         <select
+          onChange={sortByHandler}
           className="md:w-auto border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
-          defaultValue=""
         >
           <option value="" disabled>
             Select Status
           </option>
-          <option value="pending">Appointment Pending</option>
+          <option value="pending">Pending</option>
           <option value="completed">Completed</option>
           <option value="cancelled">Cancelled</option>
         </select>
