@@ -48,7 +48,7 @@ const PaymentConfirmationPage = () => {
 
   return (
     <div className="pt-24 max-w-lg mx-auto py-12 px-6">
-      <h3 className="text-3xl font-semibold text-center mb-6">
+      <h3 className="text-lg md:text-3xl font-semibold text-center mb-6">
         {paymentStatus === "success"
           ? "Payment Successful!"
           : "Payment Failed!"}

@@ -14,7 +14,7 @@ export default function LeftSection({ doctor, apptdate }) {
   }
 
   return (
-    <div className="bg-white p-6 rounded shadow-md md:col-span-2">
+    <div className="bg-white p-4 rounded shadow-md md:col-span-2">
       <CacheImage
         path={doctor.path}
         src={doctor.data.image}

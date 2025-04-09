@@ -9,7 +9,7 @@ export default function Specialization({ selectedLocation = {} }) {
   const [speData, setSpeData] = useState({ data: [] });
   const [totalCount, setTotalCount] = useState(0);
   const [currentPage, setCurrentPage] = useState(1);
-  const itemsPerPage = 12;
+  const itemsPerPage = 14;
 
   const fetchData = async (page) => {
     try {
@@ -41,14 +41,14 @@ export default function Specialization({ selectedLocation = {} }) {
         </h2>
       </div>
       {loader && <ScreenLoader />}
-      <div className="grid grid-cols-3 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-6 justify-items-center">
+      <div className="grid grid-cols-4 xs:grid-cols-4 sm:grid-cols-4 md:grid-cols-6 lg:grid-cols-7 gap-6 justify-items-center">
         {speData.data?.map((specialty, index) => (
-          <div key={index} className="flex flex-col items-center">
+          <div key={index} className="">
             <Link
               href={`doctors?type=specialization&address_line1=${selectedLocation.address_line1}&lat=${selectedLocation.lat}&lng=${selectedLocation.lon}&search=${specialty.name}&slug=${specialty.slugName}&id=${specialty._id}`}
-              className="cursor-pointer"
+              className="flex flex-col items-center cursor-pointer"
             >
-              <div className="w-24 h-24 md:w-20 md:h-20 rounded-full overflow-hidden">
+              <div className="w-18 h-18 md:w-22 md:h-22 rounded-full overflow-hidden bg-[#f6f6f6] p-4">
                 <CacheImage
                   path={speData.path}
                   src={specialty.image}
