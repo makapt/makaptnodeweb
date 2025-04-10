@@ -74,8 +74,8 @@ export default function DoctorDetailsPage() {
       <div className="flex items-center justify-between px-4 sm:px-4">
         <h2 className="text-lg font-semibold">Appointment Details</h2>
         <button
-          className="text-blue-600 text-base font-semibold hover:underline focus:outline-none"
-          onClick={() => alert("Redirecting to help center...")} // Replace with actual function
+          className="cursor-pointer text-blue-600 text-base font-semibold hover:underline focus:outline-none"
+          onClick={() => router.push("/help-support?id=" + aptId)} // Replace with actual function
         >
           Need Help?
         </button>

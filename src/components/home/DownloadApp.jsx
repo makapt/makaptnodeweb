@@ -1,19 +1,20 @@
 import AndroidIcon from "@/assets/icons/androidIcon.jsx";
 import Image from "next/image";
 import appMockup from "@/assets/img/app-mobile.png";
+import useDeviceType from "@/hooks/useDeviceType";
 
 export default function DownloadApp() {
+  const { isMobile } = useDeviceType();
   return (
     <section className="w-full bg-gray-100 py-12">
       <div className="max-w-7xl mx-auto px-4 flex flex-col md:flex-row items-center gap-8 rounded-xl">
-        {/* Left Side - Mobile App Mockup */}
         <div className="w-full md:w-1/2 flex justify-center">
           <Image
             src={appMockup}
             alt="Makapt App Mockup"
-            width={250}
-            height={300}
-            className="object-cover rounded-xl shadow-lg"
+            width={isMobile ? 100 : 150}
+            height={isMobile ? 100 : 150}
+            className="object-cover"
           />
         </div>
 

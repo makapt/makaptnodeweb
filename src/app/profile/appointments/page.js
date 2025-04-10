@@ -8,6 +8,7 @@ import Link from "next/link";
 import CacheImage from "@/components/ui/cacheImage";
 import ScreenLoader from "@/components/ui/ScreenLoader";
 import CustomPagination from "@/components/pagination/customPagination";
+import { formatFullDate, formattedDate } from "@/utils/helper";
 
 export default function ProfilePage() {
   const router = useRouter();
@@ -135,15 +136,15 @@ export default function ProfilePage() {
           <div className="block md:flex justify-between mt-3 gap-2">
             <div>
               <p className="text-sm md:text-base mb-1 flex items-center gap-3">
-                <FaCalendarAlt className="text-blue-500 text-base md:text-lg" />
-                {formatAppointmentDate(item.appointmentDate)}
-              </p>
-              <p className="text-sm md:text-base mb-1 flex items-center gap-3">
                 <FaUser className="text-green-500 text-base md:text-lg" />
                 {item.patientInfo.patientName},{" "}
                 {item.patientInfo.gender.charAt(0).toUpperCase() +
                   item.patientInfo.gender.slice(1)}
                 , {item.patientInfo.age} Yrs
+              </p>
+              <p className="text-sm md:text-base mb-1 flex items-center gap-3">
+                <FaCalendarAlt className="text-blue-500 text-base md:text-lg" />
+                {formattedDate(item.appointmentDate)} | W.No {item.waitingList}
               </p>
             </div>
             <div className="flex justify-between mt-4 gap-2">

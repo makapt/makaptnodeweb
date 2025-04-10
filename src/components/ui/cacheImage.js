@@ -10,7 +10,7 @@ export default function CacheImage({ path, src, ...rest }) {
       {...rest}
       src={imageSrc}
       alt="Doctor Image"
-      className="rounded-full mb-4"
+      className="rounded-full"
       unoptimized={!!src} // Optimize local images but allow external images without Next.js optimization
     />
   );

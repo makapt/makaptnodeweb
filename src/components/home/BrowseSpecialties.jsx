@@ -27,7 +27,7 @@ export default function BrowseSpecialties({ selectedLocation }) {
   }, []);
 
   return (
-    <section className="max-w-7xl mx-auto py-12">
+    <section className="max-w-7xl mx-auto px-4 py-12">
       {/* Header */}
       <div className="flex justify-between items-center mb-8">
         <h2 className="text-lg sm:text-2xl font-semibold">
