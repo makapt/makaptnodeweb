@@ -57,4 +57,22 @@ profileFactory.deleteOwnReview = async (id) => {
   return response;
 };
 
+profileFactory.appGetIssue = async (category) => {
+  const response = await axiosInstance.get("appGetIssue", {
+    params: {
+      category,
+    },
+  });
+  return response;
+};
+
+profileFactory.appGetSelectedIssue = async (id) => {
+  const response = await axiosInstance.get("appGetSelectedIssue", {
+    params: {
+      id,
+    },
+  });
+  return response;
+};
+
 export default profileFactory;

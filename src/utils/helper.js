@@ -109,3 +109,38 @@ export function formatFullDate(date) {
   };
   return date.toLocaleDateString("en-US", options);
 }
+
+const monthNames = [
+  "Jan",
+  "Feb",
+  "March",
+  "Apr",
+  "May",
+  "June",
+  "July",
+  "Aug",
+  "Sep",
+  "Oct",
+  "Nov",
+  "Dec",
+];
+
+const shortweekdays = [
+  { label: "Sun", value: 0 },
+  { label: "Mon", value: 1 },
+  { label: "Tue", value: 2 },
+  { label: "Wed", value: 3 },
+  { label: "Thu", value: 4 },
+  { label: "Fri", value: 5 },
+  { label: "Sat", value: 6 },
+];
+
+export const formattedDate = (data) => {
+  let date = data;
+  date = new Date(date);
+  const day = shortweekdays[date.getDay()].label;
+  const apptDate = date.getDate();
+  const month = monthNames[date.getMonth()];
+  const year = date.getFullYear();
+  return day + " " + apptDate + " " + month + " , " + year;
+};

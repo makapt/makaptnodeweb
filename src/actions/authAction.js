@@ -32,4 +32,9 @@ authFactory.accountDelete = async () => {
   return response;
 };
 
+authFactory.getSupportNo = async () => {
+  const response = await axiosInstance.get("getSupportNo");
+  return response;
+};
+
 export default authFactory;
