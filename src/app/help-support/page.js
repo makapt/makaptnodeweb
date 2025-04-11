@@ -5,12 +5,15 @@ import { FiChevronRight } from "react-icons/fi";
 import profileFactory from "@/actions/profileAction";
 import appointmentFactory from "@/actions/appointmentAction";
 import { useEffect, useState } from "react";
-import { useSearchParams } from "next/navigation";
+import { useSearchParams, useRouter } from "next/navigation";
 import { formatAppointmentDate } from "@/utils/helper";
 import CacheImage from "@/components/ui/cacheImage";
+import { FiArrowLeft } from "react-icons/fi";
+
 import Link from "next/link";
 
 export default function HelpSupport() {
+  const router = useRouter();
   const searchParams = useSearchParams();
   const [apptData, setApptData] = useState({});
   const [faqData, setFaqData] = useState([]);
@@ -54,11 +57,26 @@ export default function HelpSupport() {
     );
   };
 
+  const goBack = () => {
+    router.back();
+  };
   return (
     <div className="p-4 max-w-2xl mx-auto space-y-4">
-      <div className="text-center">
-        <h1 className="text-lg font-bold">Help & Support</h1>
+      <div className="flex items-center justify-between relative">
+        <button
+          onClick={goBack}
+          className="md:hidden flex items-center text-blue-600 hover:text-blue-800 text-md font-medium"
+        >
+          <FiArrowLeft className="mr-1 h-5 w-5" />
+          Back
+        </button>
+
+        {/* Centered Title */}
+        <h1 className="absolute left-1/2 transform -translate-x-1/2 text-lg font-bold">
+          Help & Support
+        </h1>
       </div>
+
       {apptData.data && (
         <div className="mb-4 mx-auto bg-white p-4 md:p-6 rounded-lg drop-shadow-lg">
           <div className="flex items-center justify-between mb-4">
