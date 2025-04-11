@@ -2,12 +2,14 @@
 
 import profileFactory from "@/actions/profileAction";
 import { useEffect, useState } from "react";
-import { useParams } from "next/navigation";
+import { useParams, useRouter } from "next/navigation";
 import { FiPhoneCall } from "react-icons/fi";
 import { FaThumbsUp, FaThumbsDown } from "react-icons/fa";
 import authFactory from "@/actions/authAction";
+import { FiArrowLeft } from "react-icons/fi";
 
 export default function HelpSupport() {
+  const router = useRouter();
   const { selectedIssueId } = useParams();
   const [faqData, setFaqData] = useState({});
   const [loading, setLoading] = useState(false);
@@ -41,8 +43,19 @@ export default function HelpSupport() {
     window.open(`tel:${supportNo}`);
   };
 
+  const goBack = () => {
+    router.back();
+  };
+
   return (
     <div className="p-4 max-w-2xl mx-auto space-y-4">
+      <button
+        onClick={goBack}
+        className="md:hidden flex items-center text-blue-600 hover:text-blue-800 text-md font-medium"
+      >
+        <FiArrowLeft className="mr-1 h-5 w-5" />
+        Back
+      </button>
       <div className="max-w-2xl mx-auto bg-white">
         {faqData.category !== "selectedAppointment" && (
           <h2 className="text-2xl font-semibold text-gray-700 mb-4">

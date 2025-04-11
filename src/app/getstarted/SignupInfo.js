@@ -73,10 +73,6 @@ const SignupInfo = ({ mobile }) => {
 
   return (
     <div>
-      <p className="text-gray-600 text-center mb-6">
-        Enter your personal detail to continue
-      </p>
-
       <div className="relative mb-4">
         <Controller
           control={control}
