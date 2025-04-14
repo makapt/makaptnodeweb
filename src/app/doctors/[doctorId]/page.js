@@ -6,7 +6,11 @@ import { FaShareAlt, FaHospital, FaLanguage, FaUserMd } from "react-icons/fa";
 import Link from "next/link";
 import { useSearchParams } from "next/navigation";
 import doctorFactory from "@/actions/doctorAction";
-import { formatSchedule } from "@/utils/helper";
+import {
+  applyUnavailabilityToSchedule,
+  decodeSlug,
+  formatSchedule,
+} from "@/utils/helper";
 import { renderEducation, renderSpecialist } from "@/utils/helper";
 import { useRouter } from "next/navigation"; // Import useRouter
 import { useApplicationContext } from "@/context/ApplicationContext";
@@ -20,6 +24,9 @@ export default function DoctorDetailsPage() {
   const { isMobile, isDesktop } = useDeviceType();
   const router = useRouter();
   const { doctorId } = useParams();
+
+  const { docName, docId } = decodeSlug(doctorId);
+
   const [doctor, setDoctor] = useState({ path: "" });
   const [schedules, setSchedules] = useState([]);
   const [selectedTab, setSelectedTab] = useState(0);
@@ -34,13 +41,22 @@ export default function DoctorDetailsPage() {
   const fetchData = useCallback(async () => {
     try {
       setLoader(true);
-      const result = await doctorFactory.doctordetail({ id });
-
-      if (!result?.data) return; // Prevent errors if API response is undefined
+      const result = await doctorFactory.doctordetail({ id: docId });
+      const unavailabilityData = await doctorFactory.getDoctorUnavailability({
+        id: docId,
+      });
+      console.log("unavailabilityRes", unavailabilityData.data);
+      if (!result?.data) return;
 
       setDoctor(result.data);
 
       const res = formatSchedule(result.data.data.schedules);
+      const updatedSchedule = applyUnavailabilityToSchedule(
+        res,
+        unavailabilityData.data.data
+      );
+      console.log("updatedSchedule", updatedSchedule);
+      console.log("resssssssssssss", res);
       setSchedules(res);
 
       const firstAvailableIndex = res?.findIndex(
@@ -142,9 +158,7 @@ export default function DoctorDetailsPage() {
                 </button>
               </li>
               <li>/</li>
-              <li className="text-blue-600 font-medium">
-                {decodeURIComponent(doctorId)}
-              </li>
+              <li className="text-blue-600 font-medium">{docName}</li>
             </ul>
           </nav>
 

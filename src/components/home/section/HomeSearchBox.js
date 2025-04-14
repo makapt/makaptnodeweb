@@ -7,6 +7,7 @@ import homeFactory from "@/actions/homeAction";
 import useDebouncedCallback from "@/hooks/useDebouncedCallback";
 import SearchList from "./SearchList";
 import { useSearchParams } from "next/navigation";
+import { slugify } from "@/utils/helper";
 
 export default function HomeSearchBox({
   selectedLocation,
@@ -145,15 +146,17 @@ export default function HomeSearchBox({
       address_line1: selectedLocation.address_line1 || "",
       lat: selectedLocation.lat || "",
       lng: selectedLocation.lon || "",
-      id: item._id,
     });
 
     if (item.name) {
       queryParams.append("search", item.name);
       queryParams.append("slug", item.slugName);
+      queryParams.append("id", item._id);
       router.push(`/doctors?${queryParams.toString()}`);
     } else {
-      router.push(`/doctors/${item.fullName}?${queryParams.toString()}`);
+      const slug = slugify(item.fullName);
+      const joinNameId = slug + "-" + item._id;
+      router.push(`/doctors/${joinNameId}?${queryParams.toString()}`);
     }
     setShowDropdown(false);
   };
