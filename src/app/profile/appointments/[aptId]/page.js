@@ -8,6 +8,7 @@ import {
   formatFullDate,
   renderEducation,
   renderSpecialist,
+  slugify,
 } from "@/utils/helper";
 import appointmentFactory from "../../../../actions/appointmentAction";
 import {
@@ -62,6 +63,12 @@ export default function DoctorDetailsPage() {
     router.push("/profile/appointments");
   };
 
+  const slugifyurl = (fullName, doctorId) => {
+    const slug = slugify(fullName);
+    const joinNameId = slug + "-" + doctorId;
+    return joinNameId;
+  };
+
   return (
     <div className="mt-6 md:mt-0">
       <button
@@ -93,10 +100,13 @@ export default function DoctorDetailsPage() {
               <div
                 onClick={() =>
                   router.push(
-                    `/doctors/${apptDetail.data.doctorDetails.fullName}?type=doctor&id=${apptDetail.data.doctorId}`
+                    `/doctors/${slugifyurl(
+                      apptDetail.data.doctorDetails.fullName,
+                      apptDetail.data.doctorId
+                    )}?type=doctor`
                   )
                 }
-                className="b-black w-full flex items-center gap-4 p-2 md:p-4"
+                className="cursor-pointer b-black w-full flex items-center gap-4 p-2 md:p-4"
               >
                 <CacheImage
                   path={apptDetail.path}

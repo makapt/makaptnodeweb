@@ -1,5 +1,5 @@
 import React from "react";
-import { renderEducation, renderSpecialist } from "@/utils/helper";
+import { renderEducation, renderSpecialist, slugify } from "@/utils/helper";
 import CacheImage from "@/components/ui/cacheImage";
 import useDeviceType from "@/hooks/useDeviceType";
 import { useRouter } from "next/navigation";
@@ -14,15 +14,12 @@ export default function DoctorCardList({
   const router = useRouter();
 
   const redirectDetail = (doctor) => {
+    const slug = slugify(doctor.doctors.fullName);
+    const joinNameId = slug + "-" + doctor.doctorId;
     if (isDesktop) {
-      window.open(
-        `/doctors/${doctor.doctors.fullName}?type=doctor&id=${doctor.doctorId}`,
-        "_blank"
-      );
+      window.open(`/doctors/${joinNameId}?type=doctor`, "_blank");
     } else {
-      router.push(
-        `/doctors/${doctor.doctors.fullName}?type=doctor&id=${doctor.doctorId}`
-      );
+      router.push(`/doctors/${joinNameId}?type=doctor`);
     }
   };
 
@@ -96,13 +93,13 @@ export default function DoctorCardList({
         </div>
       </div>
       <div className="flex flex-row items-center justify-between gap-2 mt-2">
-        <p className="text-xs font-bold text-blue-700 px-2 py-1">
+        <p className="text-sm md:text-base font-bold text-blue-700 px-2 py-1">
           Consult Fee: ₹{doctor?.doctor_financials?.[0]?.normalFee}
         </p>
 
         <button
           onClick={() => handleBookAppointment(doctor)}
-          className="bg-blue-600 text-xs text-white px-4 py-2 rounded cursor-pointer"
+          className="bg-blue-600 text-sm md:text-base text-white px-4 py-2 rounded cursor-pointer"
         >
           Book Appointment
         </button>

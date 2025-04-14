@@ -14,12 +14,13 @@ import {
   FiNavigation,
 } from "react-icons/fi";
 import { FaSearch, FaMapMarkerAlt } from "react-icons/fa";
+import { slugify } from "@/utils/helper";
 export default function SearchBar() {
   const router = useRouter();
   const searchParams = useSearchParams();
   const search = searchParams.get("search");
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const [searchQuery, setSearchQuery] = useState(search);
+  const [searchQuery, setSearchQuery] = useState(search || "");
   const [speData, setSpeData] = useState({ data: [] });
   const [filteredOptions, setFilteredOptions] = useState({
     spe_list: [],
@@ -135,15 +136,17 @@ export default function SearchBar() {
       address_line1: selectedLocation.address_line1 || "",
       lat: selectedLocation.lat || "",
       lng: selectedLocation.lon || "",
-      id: item._id,
     });
 
     if (item.name) {
       queryParams.append("search", item.name);
       queryParams.append("slug", item.slugName);
+      queryParams.append("id", item._id);
       router.push(`/doctors?${queryParams.toString()}`);
     } else {
-      router.push(`/doctors/${item.fullName}?${queryParams.toString()}`);
+      const slug = slugify(item.fullName);
+      const joinNameId = slug + "-" + item._id;
+      router.push(`/doctors/${joinNameId}?${queryParams.toString()}`);
     }
     setIsModalOpen(false);
   };
@@ -160,7 +163,6 @@ export default function SearchBar() {
     localStorage.setItem("userSelectedAddress", JSON.stringify(item));
   };
 
-  console.log("selectedLocation", selectedLocation);
   return (
     <>
       <div

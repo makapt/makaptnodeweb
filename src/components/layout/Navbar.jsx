@@ -7,6 +7,7 @@ import Image from "next/image";
 import { FiX, FiLogOut } from "react-icons/fi";
 
 import logo from "@/assets/logo/brandLogo.png";
+import fulllogo from "@/assets/logo/fullLogo.jpeg";
 import menu_icon from "@/assets/menu_icon.svg";
 import { useRouter } from "next/navigation"; // Import useRouter
 import userAvatar from "@/assets/img/blank-profile-picture.png";
@@ -76,10 +77,10 @@ const Navbar = () => {
               className="block md:hidden"
             />
             <Image
-              src={logo}
+              src={fulllogo}
               alt="Logo"
-              width={60}
-              height={60}
+              width={100}
+              height={100}
               className="hidden md:block"
             />
           </Link>

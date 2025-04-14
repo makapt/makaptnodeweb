@@ -49,7 +49,6 @@ export const renderEducation = (item) => {
 };
 
 export function formatSchedule(schedules) {
-  console.log("schedules", schedules);
   const today = moment().startOf("day");
   const weekDays = [
     "Sunday",
@@ -86,6 +85,29 @@ export function formatSchedule(schedules) {
   });
 
   return formattedSchedule;
+}
+
+export function applyUnavailabilityToSchedule(schedule, unavailabilityList) {
+  return schedule.map((day) => {
+    const dayDate = moment(day.date); // Already in IST (your app's schedule)
+
+    const isOnLeave = unavailabilityList.some((entry) => {
+      const startIST = moment(entry.startDate)
+        .add(5, "hours")
+        .add(30, "minutes");
+      const endIST = moment(entry.endDate).add(5, "hours").add(30, "minutes");
+
+      return (
+        dayDate.isSameOrAfter(startIST, "day") &&
+        dayDate.isSameOrBefore(endIST, "day")
+      );
+    });
+
+    return {
+      ...day,
+      times: isOnLeave ? "Leave" : day.times,
+    };
+  });
 }
 
 export function formatAppointmentDate(dateString) {
@@ -144,3 +166,27 @@ export const formattedDate = (data) => {
   const year = date.getFullYear();
   return day + " " + apptDate + " " + month + " , " + year;
 };
+
+export const slugify = (name) => {
+  return decodeURIComponent(name) // Converts %20 to space
+    .trim() // Removes leading/trailing spaces
+    .toLowerCase() // Converts to lowercase
+    .replace(/\./g, "") // Removes periods
+    .replace(/\s+/g, "-") // Replaces spaces with hyphens
+    .replace(/[^a-z0-9\-]/g, ""); // Removes special characters except hyphen
+};
+
+export function decodeSlug(slug) {
+  const parts = slug.split("-");
+  const id = parts.pop(); // Last part is the ID
+  const name = parts.join(" "); // Remaining parts form the name
+  const capitalizedName = name
+    .split(" ")
+    .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
+    .join(" ");
+
+  return {
+    docName: capitalizedName,
+    docId: id,
+  };
+}
