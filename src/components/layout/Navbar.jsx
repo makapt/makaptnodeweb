@@ -7,6 +7,7 @@ import Image from "next/image";
 import { FiX, FiLogOut } from "react-icons/fi";
 
 import logo from "@/assets/logo/brandLogo.png";
+import fulllogo from "@/assets/logo/fullLogo.jpeg";
 import menu_icon from "@/assets/menu_icon.svg";
 import { useRouter } from "next/navigation"; // Import useRouter
 import userAvatar from "@/assets/img/blank-profile-picture.png";
@@ -69,19 +70,19 @@ const Navbar = () => {
           />
           <Link href="/" className="flex items-center">
             <Image
-              src={logo}
+              src={isMobile ? logo : fulllogo}
               alt="Logo"
-              width={40}
-              height={40}
-              className="block md:hidden"
+              width={isMobile ? 40 : 100}
+              height={isMobile ? 40 : 100}
+              className="block"
             />
-            <Image
-              src={logo}
+            {/* <Image
+              src={fulllogo}
               alt="Logo"
-              width={60}
-              height={60}
+              width={100}
+              height={100}
               className="hidden md:block"
-            />
+            /> */}
           </Link>
         </div>
 
@@ -114,7 +115,7 @@ const Navbar = () => {
                   height={40}
                   className="rounded-full border border-gray-300"
                 />
-                <span className="hidden md:block text-gray-800 font-medium">
+                <span className="hidden lg:block text-gray-800 font-medium">
                   {accounts?.fullName}
                 </span>
               </div>

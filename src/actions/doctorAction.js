@@ -16,6 +16,13 @@ doctorFactory.doctordetail = async (query) => {
   return response;
 };
 
+doctorFactory.getDoctorUnavailability = async (query) => {
+  const response = await axiosInstance.get("get-doctor-unavailability", {
+    params: query,
+  });
+  return response;
+};
+
 doctorFactory.apptSummaryDetail = async (id) => {
   const response = await axiosInstance.get("appt-summary", {
     params: {
