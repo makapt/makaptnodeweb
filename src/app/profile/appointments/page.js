@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { FaCalendarAlt, FaUser, FaMapMarkerAlt } from "react-icons/fa";
 import appointmentFactory from "@/actions/appointmentAction";
@@ -8,7 +8,7 @@ import Link from "next/link";
 import CacheImage from "@/components/ui/cacheImage";
 import ScreenLoader from "@/components/ui/ScreenLoader";
 import CustomPagination from "@/components/pagination/customPagination";
-import { formatFullDate, formattedDate } from "@/utils/helper";
+import { formattedDate } from "@/utils/helper";
 
 export default function ProfilePage() {
   const router = useRouter();
@@ -18,22 +18,25 @@ export default function ProfilePage() {
   const [loader, setLoader] = useState(false);
   const itemsPerPage = 12;
 
-  const fetchData = async (page) => {
-    setApptList({ data: [], total: 0 });
-    setLoader(true);
-    const offset = page - 1;
-    const result = await appointmentFactory.getAppointments({
-      limit: itemsPerPage,
-      page: offset,
-      apptType: sortBy,
-    });
-    setApptList(result.data);
-    setLoader(false);
-  };
+  const fetchData = useCallback(
+    async (page) => {
+      setApptList({ data: [], total: 0 });
+      setLoader(true);
+      const offset = page - 1;
+      const result = await appointmentFactory.getAppointments({
+        limit: itemsPerPage,
+        page: offset,
+        apptType: sortBy,
+      });
+      setApptList(result.data);
+      setLoader(false);
+    },
+    [itemsPerPage, sortBy]
+  ); // ✅ include dependencies used inside the function
 
   useEffect(() => {
     fetchData(currentPage);
-  }, [currentPage, sortBy]);
+  }, [currentPage, fetchData]);
 
   const totalPages = Math.ceil(apptList.total / itemsPerPage);
 
@@ -54,14 +57,6 @@ export default function ProfilePage() {
       </span>
     );
   };
-
-  function formatAppointmentDate(dateString) {
-    const date = new Date(dateString);
-    const options = { year: "numeric", month: "long", day: "numeric" };
-    const formattedDate = date.toLocaleDateString("en-US", options);
-    const weekday = date.toLocaleDateString("en-US", { weekday: "long" });
-    return `${formattedDate} (${weekday})`;
-  }
 
   const rebookHandler = (item) => {
     const queryParams = new URLSearchParams({

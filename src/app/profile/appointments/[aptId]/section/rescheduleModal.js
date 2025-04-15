@@ -3,7 +3,7 @@ import appointmentFactory from "@/actions/appointmentAction";
 import { scrollToTop } from "@/components/ScrollTop";
 import { formatSchedule } from "@/utils/helper";
 import { Dialog } from "@headlessui/react";
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import toast from "react-hot-toast";
 
 export default function RescheduleModal({
@@ -20,7 +20,7 @@ export default function RescheduleModal({
     setIsOpen(false);
   };
 
-  const fetchDetails = async () => {
+  const fetchDetails = useCallback(async () => {
     try {
       const res = await appointmentFactory.getschedulelist(docId);
       const result = formatSchedule(res.data.data);
@@ -35,11 +35,11 @@ export default function RescheduleModal({
     } catch (e) {
       console.log("error", e);
     }
-  };
+  }, [docId]);
 
   useEffect(() => {
     fetchDetails();
-  }, []);
+  }, [fetchDetails]);
 
   const handleReschedule = async () => {
     try {
@@ -132,13 +132,13 @@ export default function RescheduleModal({
           <div className="p-4 border-t bg-white flex gap-4">
             <button
               onClick={handlerClose}
-              className="w-1/2 bg-gray-300 text-gray-700 px-4 py-2 rounded"
+              className="cursor-pointer w-1/2 bg-gray-300 text-gray-700 px-4 py-2 rounded"
             >
               Cancel
             </button>
             <button
               onClick={handleReschedule}
-              className={`w-1/2 text-white px-4 py-2 rounded bg-blue-600`}
+              className={`cursor-pointer w-1/2 text-white px-4 py-2 rounded bg-blue-600`}
             >
               Confirm
             </button>

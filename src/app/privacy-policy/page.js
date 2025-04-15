@@ -20,7 +20,7 @@ const PrivacyPolicy = () => {
   }, []);
 
   return (
-    <div className="container mx-auto p-14 md:px-20 lg:px-32 w-full overflow-hidden">
+    <div className="container mx-auto p-6 md:px-20 lg:px-32 w-full overflow-hidden">
       <h1 className="text-2xl sm:text-4xl font-bold mb-6 mt-8 text-center">
         Privacy Policy
       </h1>

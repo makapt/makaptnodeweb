@@ -4,7 +4,6 @@ import { useState, useEffect, useCallback } from "react";
 import { useParams } from "next/navigation";
 import { FaShareAlt, FaHospital, FaLanguage, FaUserMd } from "react-icons/fa";
 import Link from "next/link";
-import { useSearchParams } from "next/navigation";
 import doctorFactory from "@/actions/doctorAction";
 import {
   applyUnavailabilityToSchedule,
@@ -35,9 +34,6 @@ export default function DoctorDetailsPage() {
 
   const [loader, setLoader] = useState(false);
 
-  const searchParams = useSearchParams();
-  const id = searchParams.get("id");
-
   const fetchData = useCallback(async () => {
     try {
       setLoader(true);
@@ -45,7 +41,6 @@ export default function DoctorDetailsPage() {
       const unavailabilityData = await doctorFactory.getDoctorUnavailability({
         id: docId,
       });
-      console.log("unavailabilityRes", unavailabilityData.data);
       if (!result?.data) return;
 
       setDoctor(result.data);
@@ -55,8 +50,6 @@ export default function DoctorDetailsPage() {
         res,
         unavailabilityData.data.data
       );
-      console.log("updatedSchedule", updatedSchedule);
-      console.log("resssssssssssss", res);
       setSchedules(res);
 
       const firstAvailableIndex = res?.findIndex(
@@ -71,7 +64,7 @@ export default function DoctorDetailsPage() {
     } finally {
       setLoader(false);
     }
-  }, [id]);
+  }, [docId]);
 
   useEffect(() => {
     fetchData();

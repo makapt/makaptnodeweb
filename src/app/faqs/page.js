@@ -22,8 +22,11 @@ const FAQs = () => {
   }, []);
 
   return (
-    <div className="pt-24 container mx-auto p-14 md:px-20 lg:px-32 w-full overflow-hidden">
-      <h1 className="text-2xl sm:text-4xl font-bold mb-2 text-center">
+    <div
+      className="container mx-auto p-6 md:px-20 lg:px-32 w-full overflow-hidden"
+      id="service"
+    >
+      <h1 className="text-2xl sm:text-4xl font-bold mb-6 mt-8 text-center">
         How can we help you?
       </h1>
       <p className="text-gray-500 text-center mb-8 mt-2 text-lg">
