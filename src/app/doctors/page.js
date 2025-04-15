@@ -107,7 +107,7 @@ export default function DoctorListingPage() {
     }
     router.push(`?${params.toString()}`, { scroll: false });
   };
-  console.log("docList", docList.data, loader);
+
   return (
     <div className="bg-white md:bg-gray-100 min-h-screen">
       <div className="max-w-7xl mx-auto p-4 ">
@@ -258,21 +258,22 @@ export default function DoctorListingPage() {
                 No Doctors Found
               </h2>
               <p className="text-gray-600 mb-4 max-w-md">
-                We couldn't find any doctors matching your search. Try adjusting
-                your filters or search keywords.
+                We couldn&apos;t find any doctors matching your search. Try
+                adjusting your filters or search keywords.
               </p>
             </div>
           )}
 
-          {docList.data?.map((doctor, index) => (
-            <DoctorCardList
-              key={index}
-              doctor={doctor}
-              path={docList.path}
-              handleBookAppointment={handleBookAppointment}
-              slug={id}
-            />
-          ))}
+          {!loader &&
+            docList.data?.map((doctor, index) => (
+              <DoctorCardList
+                key={index}
+                doctor={doctor}
+                path={docList.path}
+                handleBookAppointment={handleBookAppointment}
+                slug={id}
+              />
+            ))}
         </main>
       </div>
       {isDrawerOpen && (

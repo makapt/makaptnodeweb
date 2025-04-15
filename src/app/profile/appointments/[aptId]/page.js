@@ -240,7 +240,7 @@ export default function DoctorDetailsPage() {
                 {/* Reschedule Appointment */}
                 <button
                   onClick={() => setRescheduleOpen(true)}
-                  className="w-full bg-white flex items-center justify-between p-3 rounded-md border border-gray-300 hover:bg-gray-100 transition"
+                  className="cursor-pointer w-full bg-white flex items-center justify-between p-3 rounded-md border border-gray-300 hover:bg-gray-100 transition"
                 >
                   <div className="flex items-center gap-2">
                     <FiCalendar className="w-5 h-5 text-blue-600" />
@@ -253,7 +253,7 @@ export default function DoctorDetailsPage() {
                 {/* Cancel Appointment */}
                 <button
                   onClick={() => setCancelOpen(true)}
-                  className="w-full bg-white flex items-center justify-between p-3 rounded-md border border-gray-300 hover:bg-gray-100 transition"
+                  className="cursor-pointer w-full bg-white flex items-center justify-between p-3 rounded-md border border-gray-300 hover:bg-gray-100 transition"
                 >
                   <div className="flex items-center gap-2">
                     <FiXCircle className="w-5 h-5 text-red-600" />

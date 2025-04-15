@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import Link from "next/link";
 import homeFactory from "@/actions/homeAction";
 import CacheImage from "@/components/ui/cacheImage";
@@ -11,26 +11,29 @@ export default function Specialization({ selectedLocation = {} }) {
   const [currentPage, setCurrentPage] = useState(1);
   const itemsPerPage = 14;
 
-  const fetchData = async (page) => {
-    try {
-      if (speData.data.length === 0) setLoader(true);
-      const offset = page - 1;
-      const result = await homeFactory.getAllSpecialization(
-        itemsPerPage,
-        offset
-      );
-      setSpeData(result.data);
-      setTotalCount(result.data.total);
-    } catch (e) {
-      console.log("e", e);
-    } finally {
-      setLoader(false);
-    }
-  };
+  const fetchData = useCallback(
+    async (page) => {
+      try {
+        if (speData.data.length === 0) setLoader(true);
+        const offset = page - 1;
+        const result = await homeFactory.getAllSpecialization(
+          itemsPerPage,
+          offset
+        );
+        setSpeData(result.data);
+        setTotalCount(result.data.total);
+      } catch (e) {
+        console.log("e", e);
+      } finally {
+        setLoader(false);
+      }
+    },
+    [itemsPerPage, speData.data.length]
+  );
 
   useEffect(() => {
     fetchData(currentPage);
-  }, [currentPage]);
+  }, [currentPage, fetchData]);
 
   const totalPages = Math.ceil(totalCount / itemsPerPage);
   return (

@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { useSearchParams, useRouter } from "next/navigation";
 import { FaCheckCircle, FaCreditCard, FaTimesCircle } from "react-icons/fa";
 import appointmentFactory from "@/actions/appointmentAction";
@@ -14,19 +14,19 @@ const PaymentConfirmationPage = () => {
   const paymentStatus = searchParams.get("status");
   const token = searchParams.get("token");
 
-  const getDetails = async () => {
+  function decodeToken(token) {
+    const decoded = atob(token);
+    return parseInt(decoded, 10);
+  }
+
+  const getDetails = useCallback(async () => {
     try {
       const res = await appointmentFactory.getOrderInfo(orderId);
       setDetails(res.data.data);
     } catch (error) {
       console.error("Error fetching order details", error);
     }
-  };
-
-  function decodeToken(token) {
-    const decoded = atob(token);
-    return parseInt(decoded, 10);
-  }
+  }, [orderId]); // ✅ Include orderId since it’s used inside
 
   useEffect(() => {
     if (!token) {
@@ -44,7 +44,7 @@ const PaymentConfirmationPage = () => {
     } else {
       getDetails();
     }
-  }, [router, token]);
+  }, [router, token, getDetails]);
 
   return (
     <div className="max-w-lg mx-auto py-12 px-6">
