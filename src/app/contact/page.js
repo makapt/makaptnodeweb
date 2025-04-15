@@ -38,14 +38,11 @@ const Contact = () => {
 
   return (
     <div
-      className="text-center p-14 lg:px-32 w-full overflow-hidden"
-      id="Contact"
+      className="container mx-auto p-6 md:px-20 lg:px-32 w-full overflow-hidden"
+      id="contact"
     >
-      <h1 className="text-2xl sm:text-4xl font-bold mb-6 mt-8">
-        Contact{" "}
-        <span className="underline underline-offset-4 decoration-1 font-light">
-          With Us
-        </span>
+      <h1 className="text-2xl sm:text-4xl font-bold mb-6 mt-8 text-center">
+        Contact With Us
       </h1>
 
       {formSubmitted && (
