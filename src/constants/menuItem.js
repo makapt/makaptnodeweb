@@ -10,7 +10,6 @@ export const menuItem = [
   { name: "Home", route: "/" },
   { name: "Find Doctors", route: "/find-doctors" },
   { name: "Video Consult", route: "#" },
-  { name: "Service", route: "/ourservices" },
   { name: "Blog", route: "/blogs" },
   { name: "Contact Us", route: "/contact" },
 ];

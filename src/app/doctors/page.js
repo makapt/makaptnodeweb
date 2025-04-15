@@ -14,6 +14,7 @@ import { formatSchedule, renderSpecialist } from "../../utils/helper";
 import { useApplicationContext } from "@/context/ApplicationContext";
 import { FiFilter } from "react-icons/fi";
 import SearchBar from "@/components/mobileSearchBar/SearchBar";
+import ScreenLoader from "@/components/ui/ScreenLoader";
 
 export default function DoctorListingPage() {
   const { isLoggedInUser } = useApplicationContext();
@@ -34,6 +35,7 @@ export default function DoctorListingPage() {
   const [isDrawerOpen, setIsDrawerOpen] = useState(false);
   const [selectedDoctor, setSelectedDoctor] = useState(null);
   const [currentPage, setCurrentPage] = useState(1);
+  const [loader, setLoader] = useState(true);
   const itemsPerPage = 12;
 
   const [docList, setDocList] = useState({ data: [] });
@@ -48,6 +50,7 @@ export default function DoctorListingPage() {
 
   const fetchData = useCallback(
     async (page) => {
+      setLoader(true);
       const offset = page - 1;
       const result = await doctorFactory.getDoctorLists({
         ...paramsObject,
@@ -56,6 +59,7 @@ export default function DoctorListingPage() {
         sortBy,
       });
       setDocList(result.data);
+      setLoader(false);
     },
     [paramsObject, itemsPerPage, sortBy]
   );
@@ -103,7 +107,7 @@ export default function DoctorListingPage() {
     }
     router.push(`?${params.toString()}`, { scroll: false });
   };
-
+  console.log("docList", docList.data, loader);
   return (
     <div className="bg-white md:bg-gray-100 min-h-screen">
       <div className="max-w-7xl mx-auto p-4 ">
@@ -244,6 +248,21 @@ export default function DoctorListingPage() {
               </div>
             </div>
           </div>
+
+          {loader && <ScreenLoader />}
+
+          {!loader && docList.data?.length === 0 && (
+            <div className="mt-12 flex flex-col items-center text-center h-full">
+              <div className="text-6xl mb-4 animate-bounce">🩺</div>
+              <h2 className="text-2xl font-semibold mb-2 text-gray-800">
+                No Doctors Found
+              </h2>
+              <p className="text-gray-600 mb-4 max-w-md">
+                We couldn't find any doctors matching your search. Try adjusting
+                your filters or search keywords.
+              </p>
+            </div>
+          )}
 
           {docList.data?.map((doctor, index) => (
             <DoctorCardList

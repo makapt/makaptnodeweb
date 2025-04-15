@@ -49,12 +49,8 @@ const HealthBlog = () => {
     },
   ];
 
-  const handleSubscribe = () => {
-    alert("Thank you for subscribing!");
-  };
-
   return (
-    <div className="pt-24 container mx-auto py-16 px-6">
+    <div className="container mx-auto py-6 px-6">
       {/* Header Section */}
       <div className="text-center mb-12 mt-8">
         <h1 className="text-4xl font-bold text-gray-800">
@@ -93,22 +89,6 @@ const HealthBlog = () => {
             </div>
           </div>
         ))}
-      </div>
-
-      {/* Call to Action */}
-      <div className="mt-12 text-center">
-        <h3 className="text-2xl font-semibold text-gray-800">
-          Want More Health Tips?
-        </h3>
-        <p className="text-gray-500">
-          Subscribe to our newsletter for the latest updates.
-        </p>
-        <button
-          onClick={handleSubscribe}
-          className="mt-4 bg-blue-600 text-white font-semibold py-3 px-6 rounded-lg hover:bg-blue-700 transition"
-        >
-          Subscribe Now
-        </button>
       </div>
     </div>
   );

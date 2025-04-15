@@ -17,7 +17,7 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata = {
-  title: "Home | Best Doctors in Your City",
+  title: "Makapt | Best Doctors in Your City",
   description: "Find top-rated doctors and book appointments easily.",
 };
 

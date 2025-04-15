@@ -102,7 +102,9 @@ export default function SearchBar() {
         (error) => {
           console.error("Error getting location:", error.message);
           if (error.code === error.PERMISSION_DENIED) {
-            alert("Location permission denied. Please enable it in settings.");
+            console.log(
+              "Location permission denied. Please enable it in settings."
+            );
           }
         }
       );

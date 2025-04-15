@@ -32,7 +32,7 @@ export default function HomeSearchBox({
   });
   const [showDropdown, setShowDropdown] = useState(false);
   const [locationValue, setLocationValue] = useState("");
-  const [searchValue, setSearchValue] = useState("");
+  const [searchValue, setSearchValue] = useState(search || "");
 
   const [filteredLocations, setFilteredLocations] = useState([]);
   const [showLocationDropdown, setShowLocationDropdown] = useState(false);
@@ -65,7 +65,9 @@ export default function HomeSearchBox({
         (error) => {
           console.error("Error getting location:", error.message);
           if (error.code === error.PERMISSION_DENIED) {
-            alert("Location permission denied. Please enable it in settings.");
+            console.log(
+              "Location permission denied. Please enable it in settings."
+            );
           }
         }
       );
@@ -76,7 +78,7 @@ export default function HomeSearchBox({
 
   useEffect(() => {
     getCurrentLatLong();
-    setSearchValue(search);
+    setSearchValue(search || "");
   }, [getCurrentLatLong, search]);
 
   const getAddressFromCoordinates = async (lat, lng) => {
@@ -124,6 +126,7 @@ export default function HomeSearchBox({
   const handleSearchChange = (e) => {
     const value = e.target.value.trim();
     debounced(value);
+    setSearchValue(value);
   };
 
   useEffect(() => {
@@ -174,7 +177,7 @@ export default function HomeSearchBox({
 
   return (
     <div
-      className="bg-white rounded-lg flex flex-col md:flex-row w-full max-w-4xl p-4 gap-4 md:gap-6 relative"
+      className="bg-white rounded-lg flex flex-col md:flex-row w-full max-w-4xl p-3 gap-4 md:gap-6 relative"
       ref={dropdownRef}
     >
       {/* Location Input */}
@@ -225,6 +228,7 @@ export default function HomeSearchBox({
             setShowLocationDropdown(false);
             setShowDropdown(true);
           }}
+          value={searchValue}
           className="w-full pl-10 pr-4 py-2 border border-gray-300 bg-gray-100 text-gray-700 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
         />
         {showDropdown && (
