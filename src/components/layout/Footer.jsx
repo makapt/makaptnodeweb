@@ -18,128 +18,93 @@ const Footer = () => {
 
   return (
     <div
-      className="pt-8 px-4 md:px-20 lg:px-32 bg-gray-900 text-white w-full overflow-hidden border-t border-gray-800"
+      className="bg-gray-900 text-white w-full overflow-hidden border-t border-gray-800 pt-10 px-4 md:px-10 lg:px-32"
       id="Footer"
     >
-      <div className="container mx-auto flex flex-col md:flex-row justify-between items-start gap-10">
-        {/* Left Section - Company Info & Newsletter */}
-        <div className="w-full md:w-1/3">
-          <h3 className="text-lg font-bold">{businessName}</h3>
-          <p className="text-gray-400 mt-2">
-            Empowering your journey with the latest insights.
-          </p>
+      <div className="max-w-7xl mx-auto">
+        <div className="grid grid-cols-2 md:grid-cols-4 gap-8">
+          {/* Quick Links */}
+          <div>
+            <h3 className="text-lg font-bold mb-4">Quick Links</h3>
+            <ul className="flex flex-col gap-2 text-gray-400 text-sm">
+              <Link href="/" className="hover:text-white">
+                Home
+              </Link>
+              <Link href="/about" className="hover:text-white">
+                About us
+              </Link>
+              <Link href="/blogs" className="hover:text-white">
+                Blog
+              </Link>
+              <Link href="/careers" className="hover:text-white">
+                Careers
+              </Link>
+              <Link href="/contact" className="hover:text-white">
+                Contact us
+              </Link>
+            </ul>
+          </div>
 
-          {/* Newsletter Subscription */}
-          <div className="mt-6">
-            <h4 className="text-md font-semibold">
-              Subscribe to Our Newsletter
-            </h4>
-            <p className="text-gray-400 text-sm">
-              Get the latest updates directly to your inbox.
-            </p>
-            <div className="flex mt-3">
-              <input
-                type="email"
-                placeholder="Enter your email"
-                className="px-4 py-2 w-full max-w-[250px] rounded-l-md focus:outline-none bg-white text-gray-900 border border-gray-500"
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
-              />
-              <button
-                onClick={handleSubscribe}
-                className="bg-blue-600 text-white px-4 py-2 rounded-r-md hover:bg-blue-700 transition cursor-pointer"
+          {/* For Doctor */}
+          <div>
+            <h3 className="text-lg font-bold mb-4">For Doctor</h3>
+            <ul className="flex flex-col gap-2 text-gray-400 text-sm">
+              <a
+                target="_blank"
+                href="https://partner.makapt.com"
+                className="hover:text-white"
               >
-                Subscribe
-              </button>
-            </div>
+                Makapt Profile
+              </a>
+            </ul>
+          </div>
+
+          {/* Legal */}
+          <div>
+            <h3 className="text-lg font-bold mb-4">Legal</h3>
+            <ul className="flex flex-col gap-2 text-gray-400 text-sm">
+              <Link href="/faqs" className="hover:text-white">
+                FAQs
+              </Link>
+              <Link href="/privacy-policy" className="hover:text-white">
+                Privacy Policy
+              </Link>
+              <Link href="/terms-conditions" className="hover:text-white">
+                Terms & Conditions
+              </Link>
+              <Link href="/ourservices" className="hover:text-white">
+                Services
+              </Link>
+            </ul>
+          </div>
+
+          {/* Social Links */}
+          <div>
+            <h3 className="text-lg font-bold mb-4">Follow Us</h3>
+            <ul className="flex flex-col gap-2 text-gray-400 text-sm">
+              <a href="https://twitter.com" className="hover:text-white">
+                Twitter (X)
+              </a>
+              <a href="https://www.facebook.com" className="hover:text-white">
+                Facebook
+              </a>
+              <a href="https://www.instagram.com" className="hover:text-white">
+                Instagram
+              </a>
+              <a href="https://www.linkedin.com" className="hover:text-white">
+                LinkedIn
+              </a>
+              <a href="https://www.youtube.com" className="hover:text-white">
+                YouTube
+              </a>
+            </ul>
           </div>
         </div>
 
-        {/* Quick Links */}
-        <div className="w-full md:w-1/5">
-          <h3 className="text-lg font-bold mb-4">Quick Links</h3>
-          <ul className="flex flex-col gap-2 text-gray-400">
-            <Link href="/" className="hover:text-white cursor-pointer">
-              Home
-            </Link>
-            <Link href="/about" className="hover:text-white cursor-pointer">
-              About us
-            </Link>
-            <Link href="/blogs" className="hover:text-white cursor-pointer">
-              Blog
-            </Link>
-            <Link href="/careers" className="hover:text-white cursor-pointer">
-              Careers
-            </Link>
-            <Link href="/contact" className="hover:text-white cursor-pointer">
-              Contact us
-            </Link>
-          </ul>
+        {/* Copyright */}
+        <div className="border-t border-gray-800 mt-10 pt-4 text-center text-sm text-gray-400">
+          © 2025 {businessName}. All rights reserved.
         </div>
-
-        {/* Legal */}
-        <div className="w-full md:w-1/5">
-          <h3 className="text-lg font-bold mb-4">Legal</h3>
-          <ul className="flex flex-col gap-2 text-gray-400">
-            <Link href="/faqs" className="hover:text-white cursor-pointer">
-              FAQs
-            </Link>
-            <Link
-              href="/privacy-policy"
-              className="hover:text-white cursor-pointer"
-            >
-              Privacy Policy
-            </Link>
-            <Link
-              href="/terms-conditions"
-              className="hover:text-white cursor-pointer"
-            >
-              Terms & Conditions
-            </Link>
-          </ul>
-        </div>
-
-        {/* Social Links */}
-        <div className="w-full md:w-1/5">
-          <h3 className="text-lg font-bold mb-4">Follow Us</h3>
-          <ul className="flex flex-col gap-2 text-gray-400">
-            <a
-              href="https://twitter.com"
-              className="hover:text-white cursor-pointer"
-            >
-              Twitter (X)
-            </a>
-            <a
-              href="https://www.facebook.com"
-              className="hover:text-white cursor-pointer"
-            >
-              Facebook
-            </a>
-            <a
-              href="https://www.instagram.com"
-              className="hover:text-white cursor-pointer"
-            >
-              Instagram
-            </a>
-            <a
-              href="https://www.linkedin.com"
-              className="hover:text-white cursor-pointer"
-            >
-              LinkedIn
-            </a>
-            <a
-              href="https://www.youtube.com"
-              className="hover:text-white cursor-pointer"
-            >
-              YouTube
-            </a>
-          </ul>
-        </div>
-      </div>
-
-      {/* Copyright */}
-      <div className="border-t border-gray-800 py-4 mt-10 text-center text-gray-400">
-        Copyright 2025 © {businessName}. All Rights Reserved.
       </div>
     </div>
   );

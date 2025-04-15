@@ -18,7 +18,7 @@ export default function Home() {
           <SearchBar />
         </div>
         <div
-          className="relative bg-cover bg-center text-center text-white h-[120px] md:h-[380px]"
+          className="relative bg-cover bg-center text-center text-white h-[120px] md:h-[220px]"
           style={{
             backgroundImage: isMobile
               ? "url('/2.png')"
@@ -26,11 +26,11 @@ export default function Home() {
           }}
         >
           <div className="hidden md:flex relative z-10 flex-col items-center h-full">
-            <h2 className="text-3xl sm:text-3xl md:text-5xl font-semibold max-w-3xl mt-10">
+            <h2 className="text-3xl sm:text-2xl font-semibold max-w-3xl mt-8">
               Make Your Appointment Easier
             </h2>
 
-            <div className="flex absolute bottom-[55px] md:bottom-[80px] w-full justify-center px-4">
+            <div className="flex absolute bottom-[55px] md:bottom-[48px] w-full justify-center px-4">
               <HomeSearchBox
                 selectedLocation={selectedLocation}
                 setSelectedLocation={setSelectedLocation}
