@@ -23,7 +23,7 @@ const TermConditions = () => {
   return (
     <div className="pt-24 container mx-auto p-14 md:px-20 lg:px-32 w-full overflow-hidden">
       <h1 className="text-2xl sm:text-4xl font-bold mb-6 mt-8 text-center">
-        MAKAPT Terms & Conditions
+        Makapt Terms & Conditions
       </h1>
 
       <div className="flex flex-col md:flex-row items-center md:items-start md:gap-10">

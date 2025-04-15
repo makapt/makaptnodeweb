@@ -76,13 +76,6 @@ const Navbar = () => {
               height={isMobile ? 40 : 100}
               className="block"
             />
-            {/* <Image
-              src={fulllogo}
-              alt="Logo"
-              width={100}
-              height={100}
-              className="hidden md:block"
-            /> */}
           </Link>
         </div>
 
