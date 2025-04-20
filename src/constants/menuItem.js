@@ -4,6 +4,7 @@ import {
   FiCalendar,
   FiHome,
   FiUsers,
+  FiStar,
 } from "react-icons/fi";
 
 export const menuItem = [
@@ -33,11 +34,11 @@ export const mobileMenuItem = [
     route: "/profile/members",
     icon: <FiUsers className="mr-3" />,
   },
-  // {
-  //   name: "Reviews",
-  //   route: "/profile/reviews",
-  //   icon: <FiStar className="mr-3" />,
-  // },
+  {
+    name: "Reviews",
+    route: "/profile/reviews",
+    icon: <FiStar className="mr-3" />,
+  },
   {
     name: "Settings",
     route: "/settings",

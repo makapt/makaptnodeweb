@@ -9,7 +9,7 @@ function extractDoctorName(slug) {
 }
 
 export function generateMetadata({ params }) {
-  const slug = params.doctorId;
+  const slug = params?.doctorId;
   const doctorName = extractDoctorName(slug);
   return {
     title: `${doctorName} | Makapt`,
