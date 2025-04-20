@@ -31,19 +31,19 @@ export default function FindDoctor() {
         </div>
 
         <div
-          className="relative bg-cover bg-center text-center text-white"
+          className="relative bg-cover bg-center text-center text-white h-[120px] md:h-[220px]"
           style={{
             backgroundImage: isMobile
               ? "url('/2.png')"
               : "linear-gradient(120deg, #005cbf 0%, #396cf000 100%), url('/2.png')",
           }}
         >
-          <div className="hidden md:flex relative z-10   flex-col items-center h-full">
-            <h2 className="text-3xl sm:text-3xl md:text-5xl font-semibold max-w-3xl mt-10">
+          <div className="hidden md:flex relative z-10 flex-col items-center h-full">
+            <h2 className="text-3xl sm:text-2xl font-semibold max-w-3xl mt-8">
               Find the Best Doctors & Book Instantly
             </h2>
 
-            <div className="absolute bottom-[55px] md:bottom-[80px] w-full flex justify-center px-4">
+            <div className="absolute bottom-[55px] md:bottom-[48px] w-full flex justify-center px-4">
               <HomeSearchBox
                 selectedLocation={selectedLocation}
                 setSelectedLocation={setSelectedLocation}

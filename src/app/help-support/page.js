@@ -4,7 +4,7 @@ import { FaPhoneAlt } from "react-icons/fa";
 import { FiChevronRight } from "react-icons/fi";
 import profileFactory from "@/actions/profileAction";
 import appointmentFactory from "@/actions/appointmentAction";
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { useSearchParams, useRouter } from "next/navigation";
 import { formatAppointmentDate } from "@/utils/helper";
 import CacheImage from "@/components/ui/cacheImage";
@@ -21,7 +21,7 @@ export default function HelpSupport() {
 
   const id = searchParams.get("id");
 
-  const fetchList = async () => {
+  const fetchList = useCallback(async () => {
     try {
       setLoading(true);
       const appt = await appointmentFactory.appointmentDetail(id);
@@ -33,11 +33,11 @@ export default function HelpSupport() {
     } finally {
       setLoading(false);
     }
-  };
+  }, [id]); // 👈 include id because it’s used inside fetchList
 
   useEffect(() => {
     fetchList();
-  }, []);
+  }, [fetchList]);
 
   const getStatusBadge = (status) => {
     const statusStyles = {

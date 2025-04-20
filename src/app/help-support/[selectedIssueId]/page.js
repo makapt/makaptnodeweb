@@ -1,7 +1,7 @@
 "use client";
 
 import profileFactory from "@/actions/profileAction";
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { useParams, useRouter } from "next/navigation";
 import { FiPhoneCall } from "react-icons/fi";
 import { FaThumbsUp, FaThumbsDown } from "react-icons/fa";
@@ -17,7 +17,7 @@ export default function HelpSupport() {
   const [isDisLiked, setDisLiked] = useState(false);
   const [supportNo, setSupportNo] = useState("");
 
-  const fetchList = async () => {
+  const fetchList = useCallback(async () => {
     try {
       setLoading(true);
       const getFaqs = await profileFactory.appGetSelectedIssue(selectedIssueId);
@@ -27,17 +27,17 @@ export default function HelpSupport() {
     } finally {
       setLoading(false);
     }
-  };
+  }, [selectedIssueId]); // ✅ Include any variable used inside
 
-  const fetchSupportNo = async () => {
+  const fetchSupportNo = useCallback(async () => {
     const res = await authFactory.getSupportNo();
     setSupportNo(res.data.data.accountSupport);
-  };
+  }, []); // ✅ No dependencies used inside
 
   useEffect(() => {
     fetchSupportNo();
     fetchList();
-  }, []);
+  }, [fetchSupportNo, fetchList]);
 
   const handlePhone = () => {
     window.open(`tel:${supportNo}`);

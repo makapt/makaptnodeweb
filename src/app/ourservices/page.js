@@ -1,3 +1,5 @@
+"use client";
+
 import Head from "next/head";
 import Image from "next/image";
 import Link from "next/link";
@@ -5,6 +7,7 @@ import service_pic1 from "@/assets/img/calendar.png";
 import service_pic2 from "@/assets/img/stop-watch.png";
 import service_pic3 from "@/assets/img/notification.png";
 import service_pic4 from "@/assets/img/clock.png";
+import { useApplicationContext } from "@/context/ApplicationContext";
 
 export const serviceData = [
   {
@@ -30,6 +33,7 @@ export const serviceData = [
 ];
 
 const OurService = () => {
+  const { isLoggedInUser } = useApplicationContext();
   return (
     <>
       <Head>
@@ -50,8 +54,8 @@ const OurService = () => {
         <p className="mt-4 text-lg">
           Your trusted partner for professional and reliable solutions.
         </p>
-        <Link href="/getstarted">
-          <button className="mt-6 bg-white text-blue-600 font-semibold py-3 px-8 rounded-lg hover:bg-gray-200">
+        <Link href={isLoggedInUser ? "/find-doctors" : "/getstarted"}>
+          <button className="cursor-pointer mt-6 bg-white text-blue-600 font-semibold py-3 px-8 rounded-lg hover:bg-gray-200">
             Get Started
           </button>
         </Link>

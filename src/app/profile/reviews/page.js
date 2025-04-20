@@ -5,6 +5,7 @@ import { useRouter } from "next/navigation";
 import { FaEdit, FaTrash, FaThumbsUp, FaThumbsDown } from "react-icons/fa";
 import profileFactory from "@/actions/profileAction";
 import { formatAppointmentDate } from "@/utils/helper";
+import toast from "react-hot-toast";
 
 export default function ProfilePage() {
   const router = useRouter();
@@ -55,9 +56,13 @@ export default function ProfilePage() {
     setDeleteId(id);
   };
 
-  const confirmDelete = () => {
-    console.log("Delete member with ID:", deleteId);
+  const confirmDelete = async () => {
+    const res = await profileFactory.deleteOwnReview(deleteId);
     setDeleteId(null);
+    toast.success(res.data.data);
+    setTimeout(() => {
+      fetchData(currentPage);
+    }, 500);
   };
 
   return (

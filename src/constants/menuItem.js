@@ -4,13 +4,13 @@ import {
   FiCalendar,
   FiHome,
   FiUsers,
+  FiStar,
 } from "react-icons/fi";
 
 export const menuItem = [
   { name: "Home", route: "/" },
   { name: "Find Doctors", route: "/find-doctors" },
   { name: "Video Consult", route: "#" },
-  { name: "Service", route: "/ourservices" },
   { name: "Blog", route: "/blogs" },
   { name: "Contact Us", route: "/contact" },
 ];
@@ -34,11 +34,11 @@ export const mobileMenuItem = [
     route: "/profile/members",
     icon: <FiUsers className="mr-3" />,
   },
-  // {
-  //   name: "Reviews",
-  //   route: "/profile/reviews",
-  //   icon: <FiStar className="mr-3" />,
-  // },
+  {
+    name: "Reviews",
+    route: "/profile/reviews",
+    icon: <FiStar className="mr-3" />,
+  },
   {
     name: "Settings",
     route: "/settings",
