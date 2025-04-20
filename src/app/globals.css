@@ -1,13 +1,13 @@
 @import "tailwindcss";
 
 body {
-  font-family: "Poppins", sans-serif; /* Primary Font */
+  font-family: Inter, sans-serif;
 }
 
 h1,
 h2,
 h3 {
-  font-family: "Montserrat", sans-serif; /* Headings */
+  font-family: Inter, sans-serif;
 }
 .scrollbar-hide::-webkit-scrollbar {
   display: none;
