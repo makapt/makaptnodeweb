@@ -84,12 +84,15 @@ export default function DoctorCardList({
           >
             {doctor.address.locality + ", " + doctor.address.city}
           </p>
-          <div className="mt-2 mb-1 flex items-center text-green-600 text-sm">
-            👍 98%{" "}
-            <span className="text-sm text-gray-600 ml-1">
-              30 Patient Stories
-            </span>
-          </div>
+
+          {doctor.reviewStats && (
+            <div className="mt-2 mb-1 flex items-center text-green-600 text-sm">
+              👍 {Math.round(doctor.reviewStats.recommendationPercentage)}%{" "}
+              <span className="text-sm text-gray-600 ml-1">
+                {doctor.reviewStats.total} Patient Stories
+              </span>
+            </div>
+          )}
         </div>
       </div>
       <div className="flex flex-row items-center justify-between gap-2 mt-2">

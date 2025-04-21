@@ -1,6 +1,8 @@
 import React, { useState } from "react";
-import { formatFullDate } from "@/utils/helper";
+import { dateDiff_SMH_full, formatFullDate } from "@/utils/helper";
 import useDeviceType from "@/hooks/useDeviceType";
+import { FaRegThumbsDown, FaRegThumbsUp } from "react-icons/fa";
+import NameAndDate from "./section/NameAndDate";
 
 export default function ReviewList({
   handlerShareReview,
@@ -10,8 +12,6 @@ export default function ReviewList({
   handlerTab,
 }) {
   const { isMobile } = useDeviceType();
-
-  const [expanded, setExpanded] = useState(false);
 
   if (reviewList.data.length === 0 && activeTab !== "review") {
     return "";
@@ -62,72 +62,63 @@ export default function ReviewList({
 
       <div className="mt-8 space-y-6">
         {reviewList.data.map((r, i) => (
-          <div key={i} className={`pb-6 border-b border-gray-200`}>
-            {/* Header: Avatar + Name + Time */}
-            <div className="flex justify-between items-center mb-2">
+          <div key={i} className="pb-6 border-b border-gray-200">
+            <div className="flex flex-col sm:flex-row gap-4 sm:items-start">
+              {/* Avatar */}
               <div className="flex items-center gap-3">
-                <div className="w-8 h-8 bg-[#6b45c6] text-white rounded-full flex items-center justify-center font-bold text-sm">
-                  {r.fullName.charAt(0)}
+                <div className="w-12 h-12 bg-[#6b45c6] text-white rounded-full flex items-center justify-center font-bold text-lg shrink-0">
+                  {r.fullName.charAt(0).toUpperCase()}
                 </div>
-                <div>
-                  <p className="text-sm font-semibold text-[#737382]">
-                    {r.fullName}{" "}
-                    {r.verified && (
-                      <span className="text-sm text-green-600 font-medium">
-                        (Verified)
-                      </span>
-                    )}
+                {isMobile && (
+                  <NameAndDate fullName={r.fullName} createdAt={r.createdAt} />
+                )}
+              </div>
+
+              {/* Content */}
+              <div className="flex-1">
+                {!isMobile && (
+                  <NameAndDate fullName={r.fullName} createdAt={r.createdAt} />
+                )}
+
+                {/* Specialization */}
+                <p className="text-lg font-semibold mt:0 md:mt-2 mb-2 md:mt-3">
+                  Visited for {r.specialization.name}
+                </p>
+
+                {/* Recommendation */}
+                {r.recommendation === "yes" ? (
+                  <p className="text-sm flex items-center text-gray-600 gap-2 mt-1">
+                    <FaRegThumbsUp className="text-gray-600" /> I recommend this
+                    doctor!
                   </p>
-                </div>
-              </div>
-              <p className="text-xs text-gray-500">
-                {formatFullDate(new Date(r.createdAt))}
-              </p>
-            </div>
+                ) : (
+                  <p className="text-sm flex items-center text-gray-500 gap-2 mt-1">
+                    <FaRegThumbsDown className="text-gray-500" /> I do not
+                    recommend this doctor.
+                  </p>
+                )}
 
-            {/* Visit Reason */}
-            <p className="text-base text-gray-700 mt-4 mb-2 font-medium">
-              Visited For {r.specialization.name}
-            </p>
+                {/* Happy With Tags */}
+                {r.mostHappyWith?.length > 0 && (
+                  <div className="mt-3">
+                    <p className="text-sm text-gray-500 mb-3">Happy with:</p>
+                    <div className="flex flex-wrap gap-2">
+                      {r.mostHappyWith.map((tag, i) => (
+                        <span
+                          key={i}
+                          className="text-xs px-3 py-1 rounded-md bg-[#f3f0ff] text-[#6b45c6] font-medium border border-[#e0dcfa]"
+                        >
+                          {tag}
+                        </span>
+                      ))}
+                    </div>
+                  </div>
+                )}
 
-            {/* Recommendation */}
-            {r.recommendation === "yes" && (
-              <p className="text-sm font-semibold text-green-700 mb-2">
-                👍 I recommend the doctor
-              </p>
-            )}
-
-            {/* Happy With as Button-style Pills */}
-            <div className="mb-4 mt-4">
-              <p className="text-sm font-semibold text-gray-700 mb-2">
-                Happy with:
-              </p>
-              <div className="flex flex-wrap gap-2">
-                {r.mostHappyWith.map((tag, i) => (
-                  <span
-                    key={i}
-                    className="text-xs px-3 py-1 rounded-md bg-[#f3f0ff] text-[#6b45c6] font-medium border border-[#e0dcfa]"
-                  >
-                    {tag}
-                  </span>
-                ))}
+                {/* Description */}
+                <p className="text-sm text-gray-800 mt-3">{r.desc}</p>
               </div>
             </div>
-
-            {/* Review Content */}
-            <p className="text-sm text-gray-800">
-              {expanded ? r.desc : `${r.desc.substring(0, 150)}...`}
-            </p>
-
-            {/* Toggle */}
-            {r.desc.length > 150 && (
-              <button
-                className="text-sm text-[#6b45c6] font-semibold mt-1"
-                onClick={() => setExpanded((prev) => !prev)}
-              >
-                {expanded ? "Shrink" : "Show More"}
-              </button>
-            )}
           </div>
         ))}
 
