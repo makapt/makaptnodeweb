@@ -110,6 +110,7 @@ export default function AppointmentSummery() {
       couponCode: null,
       createdBy: "user",
       paymentSource: "online",
+      apptSource: "web",
       apptType: doctor.data.apptType,
       tax_service_charge: serviceFees(),
     };

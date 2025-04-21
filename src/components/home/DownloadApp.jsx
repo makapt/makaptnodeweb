@@ -42,7 +42,7 @@ export default function DownloadApp() {
           {/* Download Buttons */}
           <div className="mt-6 flex gap-4 justify-center md:justify-start">
             <a
-              href="https://makapt.s3.ap-south-1.amazonaws.com/androidapp/app-release.apk"
+              href="https://play.google.com/store/apps/details?id=com.makapt"
               target="_blank"
               rel="noopener noreferrer"
               className="flex items-center gap-2 bg-gray-900 text-white px-5 py-3 rounded-lg hover:bg-gray-800"

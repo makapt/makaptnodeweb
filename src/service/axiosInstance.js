@@ -10,7 +10,7 @@ export const apipath =
     ? "http://localhost:8000/api/"
     : process.env.NODE_ENV === "staging"
     ? "https://makapt-api.vercel.app/api/"
-    : "/api/";
+    : "https://makapt-api.vercel.app/api/";
 const axiosInstance = axios.create({
   baseURL: apipath,
 });
