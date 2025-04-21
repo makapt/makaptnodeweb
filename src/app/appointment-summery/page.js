@@ -278,7 +278,7 @@ export default function AppointmentSummery() {
               <div className="flex justify-between text-gray-600 mt-2">
                 <p>
                   <span className="text-black text-[16px] block">
-                    Booking Fee{": "}
+                    Booking Fee & Tax{": "}
                   </span>
                   <span className="text-blue-600 text-[12px] font-semibold block">
                     Pay now to confirm your appointment
