@@ -237,7 +237,7 @@ export default function DoctorDetailsPage() {
                   <p className="text-sm mt-1 mb-1" style={{ color: "#121414" }}>
                     {doctor.data.workExperience} years experience overall
                   </p>
-                  <p className="hidden md:block text-gray-600 text-sm md:text-md flex items-center gap-2 mb-1 mt-2">
+                  <p className="hidden md:flex text-gray-600 text-sm md:text-md items-center gap-2 mb-1 mt-2">
                     <BsPatchCheckFill className="text-green-500" />
                     Medical Registration Verified
                   </p>

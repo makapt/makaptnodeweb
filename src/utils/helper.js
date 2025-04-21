@@ -190,3 +190,36 @@ export function decodeSlug(slug) {
     docId: id,
   };
 }
+
+export const dateDiff_SMH_full = (value) => {
+  var dateFuture = new Date();
+  var dateNow = new Date(value);
+  var seconds = Math.floor((dateFuture - dateNow) / 1000);
+  var minutes = Math.floor(seconds / 60);
+  var hours = Math.floor(minutes / 60);
+  var days = Math.floor(hours / 24);
+  var weeks = Math.floor(days / 7);
+  var months = Math.floor(days / 30);
+  var years = Math.floor(months / 12);
+
+  hours = hours - days * 24;
+  minutes = minutes - days * 24 * 60 - hours * 60;
+  seconds = seconds - days * 24 * 60 * 60 - hours * 60 * 60 - minutes * 60;
+  let period = "";
+  if (years) {
+    period = years + " year";
+  } else if (months) {
+    period = months + " mon";
+  } else if (weeks) {
+    period = weeks + " weeks";
+  } else if (days) {
+    period = days + " days";
+  } else if (hours) {
+    period = hours + " hrs";
+  } else if (minutes) {
+    period = minutes + " min";
+  } else if (seconds) {
+    period = seconds + " sec";
+  }
+  return period;
+};
