@@ -10,6 +10,8 @@ import Link from "next/link";
 import appointmentFactory from "@/actions/appointmentAction";
 import { useSearchParams } from "next/navigation";
 import { FiLoader } from "react-icons/fi";
+import { Dialog } from "@headlessui/react";
+import { FaExclamationTriangle } from "react-icons/fa";
 
 export default function AppointmentSummery() {
   const router = useRouter();
@@ -22,8 +24,16 @@ export default function AppointmentSummery() {
   const [memberList, setMemberList] = useState({ data: [], total: 0 });
   const [btnClicked, setBtnClicked] = useState(false);
   const [loader, setLoader] = useState(false);
+  const [isOpen, setOpen] = useState(false);
+  const [isLimitFull, setLimitFull] = useState(false);
 
   const fetchData = useCallback(async () => {
+    // const patientLimit = await appointmentFactory.checkPatientLimit({
+    //   doctorId: id,
+    //   appointmentDate: new Date(apptdate),
+    //   source: "page-reload",
+    // });
+    // setLimitFull(patientLimit.data.isFull);
     const result = await doctorFactory.apptSummaryDetail(id);
     setDoctor(result.data);
     const members = await profileFactory.getMember();
@@ -89,16 +99,16 @@ export default function AppointmentSummery() {
   }
 
   const handlePayment = async () => {
-    if (btnClicked) return; // Prevent double-click
+    if (btnClicked) return;
 
-    setBtnClicked(true); // ✅ Immediately disable the button
+    setBtnClicked(true);
 
     let selectedMem = [...memberList.data];
     selectedMem = selectedMem.filter((item) => item.isDefault)[0];
 
     if (!selectedMem) {
       alert("Please select patient");
-      setBtnClicked(false); // Re-enable button
+      setBtnClicked(false);
       return;
     }
 
@@ -120,9 +130,10 @@ export default function AppointmentSummery() {
       const response = await appointmentFactory.createOrder({
         amount,
         doctorId: id,
+        appointmentDate: new Date(apptdate),
       });
 
-      const { orderId } = response.data;
+      const { orderId, fullName, mobile, email } = response.data;
 
       const options = {
         key: "rzp_test_DjVr1Ol8Y7pYaK",
@@ -167,9 +178,9 @@ export default function AppointmentSummery() {
           },
         },
         prefill: {
-          name: "Patient Name",
-          email: "patient@example.com",
-          contact: "9999999999",
+          name: fullName,
+          email: mobile,
+          contact: email,
         },
         theme: {
           color: "#fc9916",
@@ -180,7 +191,8 @@ export default function AppointmentSummery() {
       rzp.open();
     } catch (error) {
       console.error("Error during payment setup:", error);
-      setBtnClicked(false); // ✅ Re-enable button on failure
+      setBtnClicked(false);
+      if (error.status === 400) setOpen(true);
     }
   };
 
@@ -199,9 +211,20 @@ export default function AppointmentSummery() {
     };
   }, [loader]);
 
+  const onClose = () => {
+    setOpen(false);
+  };
+
   return (
     <div className="relative min-h-screen bg-gray-100 p-4">
-      {/* Main Content */}
+      {isLimitFull && (
+        <div className="max-w-5xl mx-auto grid grid-cols-1 gap-6">
+          <div className="bg-yellow-100 text-yellow-800 p-3 rounded mb-4 font-semibold">
+            Appointment slots are currently full. Please try again later or
+            choose a different time.
+          </div>
+        </div>
+      )}
 
       {loader && (
         <div
@@ -278,7 +301,7 @@ export default function AppointmentSummery() {
               <div className="flex justify-between text-gray-600 mt-2">
                 <p>
                   <span className="text-black text-[16px] block">
-                    Booking Fee{": "}
+                    Booking Fee & Tax{": "}
                   </span>
                   <span className="text-blue-600 text-[12px] font-semibold block">
                     Pay now to confirm your appointment
@@ -330,11 +353,11 @@ export default function AppointmentSummery() {
 
             <button
               onClick={handlePayment}
-              disabled={btnClicked}
-              className={`cursor-pointer w-full text-sm font-semibold mt-4 px-4 py-2 rounded-lg transition-all flex items-center justify-center ${
-                btnClicked
-                  ? "bg-blue-300 cursor-not-allowed"
-                  : "bg-blue-600 hover:bg-blue-700 text-white"
+              disabled={btnClicked || isLimitFull}
+              className={`w-full text-sm font-semibold mt-4 px-4 py-2 rounded-lg transition-all flex items-center justify-center ${
+                btnClicked || isLimitFull
+                  ? "bg-blue-300 text-gray-500 cursor-not-allowed"
+                  : "cursor-pointer bg-blue-600 hover:bg-blue-700 text-white"
               }`}
             >
               {btnClicked ? (
@@ -346,9 +369,56 @@ export default function AppointmentSummery() {
                 <>Pay ₹{serviceFees()} to Confirm Booking</>
               )}
             </button>
+            {isLimitFull && (
+              <p className="text-base text-red-600 mt-2 font-semibold">
+                Appointment slots are currently full. Please try again later or
+                choose a different time.
+              </p>
+            )}
           </div>
         </div>
       )}
+
+      <Dialog open={isOpen} onClose={onClose} className="relative z-50">
+        <div className="fixed inset-0 bg-black/25" />
+
+        <div className="fixed inset-0 overflow-y-auto">
+          <div className="flex min-h-full items-center justify-center p-4">
+            {/* Just use a div instead of Dialog.Panel if needed */}
+            <div className="w-full max-w-md transform overflow-hidden rounded-2xl bg-white p-6 text-left shadow-xl transition-all">
+              <div className="flex items-center gap-3 mb-4">
+                <FaExclamationTriangle className="h-6 w-6 text-red-500" />
+
+                <h2 className="text-lg font-semibold text-gray-900">
+                  Appointment Unavailable
+                </h2>
+              </div>
+              <div className="text-gray-700">
+                <p className="font-semibold">
+                  The doctor has already reached their appointment limit for the
+                  selected day.
+                </p>
+                <p className="mt-2 text-sm text-gray-600">
+                  Please choose another available date to schedule your
+                  appointment.
+                </p>
+              </div>
+
+              <div className="mt-6 flex justify-end">
+                <button
+                  onClick={() => {
+                    onClose();
+                    router.back();
+                  }}
+                  className="cursor-pointer rounded-md bg-blue-600 px-4 py-2 text-white hover:bg-blue-700 transition"
+                >
+                  Go Back
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </Dialog>
     </div>
   );
 }
