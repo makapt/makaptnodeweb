@@ -83,7 +83,6 @@ export function formatSchedule(schedules) {
       times: scheduleMap[dayName] || "Unavailable", // If day is missing, mark as unavailable
     };
   });
-
   return formattedSchedule;
 }
 

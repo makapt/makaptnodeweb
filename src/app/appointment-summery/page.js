@@ -12,6 +12,7 @@ import { useSearchParams } from "next/navigation";
 import { FiLoader } from "react-icons/fi";
 import { Dialog } from "@headlessui/react";
 import { FaExclamationTriangle } from "react-icons/fa";
+import moment from "moment-timezone";
 
 export default function AppointmentSummery() {
   const router = useRouter();
@@ -112,8 +113,10 @@ export default function AppointmentSummery() {
       return;
     }
 
+    const utcDate = moment.tz(`${apptdate} 00:00`, "Asia/Kolkata").toDate();
+
     const payload = {
-      appointmentDate: new Date(apptdate),
+      appointmentDate: utcDate,
       patientInfo: selectedMem,
       doctorId: id,
       specialist: specialist,
@@ -127,10 +130,11 @@ export default function AppointmentSummery() {
 
     try {
       const amount = serviceFees();
+
       const response = await appointmentFactory.createOrder({
         amount,
         doctorId: id,
-        appointmentDate: new Date(apptdate),
+        appointmentDate: utcDate,
       });
 
       const { orderId, fullName, mobile, email } = response.data;
