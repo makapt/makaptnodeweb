@@ -2,6 +2,11 @@ import axiosInstance from "@/service/axiosInstance";
 
 const appointmentFactory = {};
 
+appointmentFactory.checkPatientLimit = async (data) => {
+  const response = await axiosInstance.post("check-patient-limit", data);
+  return response;
+};
+
 appointmentFactory.createOrder = async (data) => {
   const response = await axiosInstance.post("create-order", data);
   return response;
