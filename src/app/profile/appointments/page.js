@@ -8,7 +8,7 @@ import Link from "next/link";
 import CacheImage from "@/components/ui/cacheImage";
 import ScreenLoader from "@/components/ui/ScreenLoader";
 import CustomPagination from "@/components/pagination/customPagination";
-import { formattedDate } from "@/utils/helper";
+import { formattedDate, slugify } from "@/utils/helper";
 
 export default function ProfilePage() {
   const router = useRouter();
@@ -58,13 +58,18 @@ export default function ProfilePage() {
     );
   };
 
+  const slugifyurl = (fullName, doctorId) => {
+    const slug = slugify(fullName);
+    const joinNameId = slug + "-" + doctorId;
+    return joinNameId;
+  };
+
   const rebookHandler = (item) => {
-    const queryParams = new URLSearchParams({
-      type: "doctor",
-      id: item.doctorId,
-    });
     router.push(
-      `/doctors/${item.doctorDetails.fullName}?${queryParams.toString()}`
+      `/doctors/${slugifyurl(
+        item.doctorDetails.fullName,
+        item.doctorId
+      )}?type=doctor`
     );
   };
 

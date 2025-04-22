@@ -166,7 +166,7 @@ export default function DoctorDetailsPage() {
 
                 {/* Address */}
                 <div className="flex items-center p-2">
-                  <FiMapPin className="mr-3 text-4xl text-gray-600" />
+                  <FiMapPin className="mr-3 text-xl text-gray-600" />
                   <p className="text-sm text-gray-900">
                     {apptDetail.data.doctorDetails.address.formatted_address}
                   </p>
@@ -222,7 +222,7 @@ export default function DoctorDetailsPage() {
                 <div className="flex items-center justify-between border-b pb-2">
                   <p className="text-sm text-gray-600">Booking Fee (Paid)</p>
                   <p className="text-sm font-semibold text-green-600">
-                    ₹{apptDetail.data.tax_service_charge}
+                    ₹{apptDetail.data.transactions[0].tax_service_charge}
                   </p>
                 </div>
 
@@ -230,7 +230,7 @@ export default function DoctorDetailsPage() {
                 <div className="flex items-center justify-between font-semibold">
                   <p className="text-sm text-gray-900">Total Charge</p>
                   <p className="text-sm text-gray-900">
-                    ₹{apptDetail.data.totalCharges}
+                    ₹{apptDetail.data.transactions[0].totalCharges}
                   </p>
                 </div>
               </div>
