@@ -100,10 +100,6 @@ export default function AppointmentSummery() {
   }
 
   const handlePayment = async () => {
-    console.log(
-      "NEXT_PUBLIC_RAZORPAY_KEY_ID",
-      process.env.NEXT_PUBLIC_RAZORPAY_KEY_ID
-    );
     if (btnClicked) return;
 
     setBtnClicked(true);
@@ -144,7 +140,7 @@ export default function AppointmentSummery() {
       const { orderId, fullName, mobile, email } = response.data;
 
       const options = {
-        key: "rzp_live_v0qd7mJRoytFGf",
+        key: process.env.NEXT_PUBLIC_RAZORPAY_KEY_ID,
         amount: amount,
         currency: "INR",
         name: "MAKAPT",
