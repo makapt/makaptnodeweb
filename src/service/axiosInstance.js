@@ -8,10 +8,10 @@ export const apipath =
   ENV === "development"
     ? "http://localhost:8000/api/"
     : ENV === "staging"
-    ? "https://makapt-api.vercel.app/api/"
+    ? "https://serv-makapt.vercel.app/api/"
     : "https://makapt.com/api/";
 
-console.log("Custom ENV:", ENV);
+console.log("testing :", ENV);
 console.log("Using API base path:", apipath);
 
 const axiosInstance = axios.create({
