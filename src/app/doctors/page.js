@@ -15,6 +15,7 @@ import { useApplicationContext } from "@/context/ApplicationContext";
 import { FiFilter } from "react-icons/fi";
 import SearchBar from "@/components/mobileSearchBar/SearchBar";
 import ScreenLoader from "@/components/ui/ScreenLoader";
+import Link from "next/link";
 
 export default function DoctorListingPage() {
   const { isLoggedInUser } = useApplicationContext();
@@ -86,16 +87,16 @@ export default function DoctorListingPage() {
   };
 
   const handleConfirmAppointment = () => {
+    let route = "";
     if (isLoggedInUser) {
-      router.push(
-        `/appointment-summery?apptdate=${schedules[selectedTab].date}&id=${selectedDoctor.doctorId}`
-      );
+      route = `/appointment-summery?apptdate=${schedules[selectedTab].date}&id=${selectedDoctor.doctorId}`;
     } else {
       const queryParams = new URLSearchParams({
         redirectionURL: `/appointment-summery?apptdate=${schedules[selectedTab].date}&id=${selectedDoctor.doctorId}`,
       });
-      router.push(`/getstarted?${queryParams.toString()}`);
+      route = `/getstarted?${queryParams.toString()}`;
     }
+    return route;
   };
 
   const filterHandler = (filterName, filterValue, date_value) => {
@@ -357,13 +358,12 @@ export default function DoctorListingPage() {
                   </div>
                 )}
 
-                {/* Confirm Appointment Button */}
-                <button
-                  className="mt-4 w-full px-4 py-2 bg-green-500 text-white font-semibold rounded cursor-pointer"
-                  onClick={handleConfirmAppointment}
+                <Link
+                  href={handleConfirmAppointment()}
+                  className="mt-4 w-full px-4 py-2 bg-green-500 text-white font-semibold rounded block text-center"
                 >
                   Confirm Appointment
-                </button>
+                </Link>
               </div>
             )}
           </div>
