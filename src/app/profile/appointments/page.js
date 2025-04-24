@@ -32,7 +32,7 @@ export default function ProfilePage() {
       setLoader(false);
     },
     [itemsPerPage, sortBy]
-  ); // ✅ include dependencies used inside the function
+  );
 
   useEffect(() => {
     fetchData(currentPage);
@@ -76,6 +76,9 @@ export default function ProfilePage() {
   const sortByHandler = (e) => {
     setSortBy(e.target.value);
   };
+
+  console.log("apptList", apptList);
+  console.log("totalPages", totalPages, apptList.total, itemsPerPage);
 
   return (
     <div className="px-4 py-4 mt-4 md:mt-0">
@@ -163,7 +166,7 @@ export default function ProfilePage() {
           </div>
         </div>
       ))}
-      {totalPages > itemsPerPage && (
+      {apptList.total > itemsPerPage && (
         <CustomPagination
           currentPage={currentPage}
           setCurrentPage={setCurrentPage}
