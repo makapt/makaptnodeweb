@@ -1,15 +1,11 @@
 "use client";
 import { useState, useEffect } from "react";
-import { FaEdit } from "react-icons/fa";
 import Button from "@/components/ui/button";
 import Input from "@/components/ui/input";
 import SelectBox from "@/components/ui/selectBox";
 
 import { useSearchParams } from "next/navigation";
 import { useForm, Controller } from "react-hook-form";
-import * as yup from "yup";
-import { yupResolver } from "@hookform/resolvers/yup";
-import { phoneRegExp } from "@/utils/regex";
 import authFactory from "../../actions/authAction";
 import DateOfBirthPicker from "@/components/ui/dateOfBirthPicker";
 import TextArea from "@/components/ui/textArea";
