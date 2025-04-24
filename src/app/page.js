@@ -1,5 +1,4 @@
 "use client";
-import Head from "next/head";
 import Services from "@/components/home/Services";
 import BrowseSpecialties from "@/components/home/BrowseSpecialties";
 import DownloadApp from "@/components/home/DownloadApp";

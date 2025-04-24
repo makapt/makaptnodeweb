@@ -42,10 +42,31 @@ const LoginWithOTP = ({ handlerNewUser, setMobile }) => {
     },
   });
 
+  async function getLocation() {
+    return new Promise((resolve) => {
+      if (!navigator.geolocation) return resolve(null);
+      navigator.geolocation.getCurrentPosition(
+        (pos) =>
+          resolve({
+            latitude: pos.coords.latitude,
+            longitude: pos.coords.longitude,
+          }),
+        () => resolve(null)
+      );
+    });
+  }
+
   const sendOTpHandler = async (data) => {
     try {
+      const location = await getLocation();
       setLoader(true);
-      await authFactory.signupOTP(data);
+      await authFactory.signupOTP({
+        ...data,
+        platform: "web",
+        browserInfo: navigator.userAgent,
+        lat: location?.latitude,
+        long: location?.longitude,
+      });
       setSentOTP(true);
     } catch (e) {
       console.log("eeeee", e);
