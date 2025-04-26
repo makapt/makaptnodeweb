@@ -44,30 +44,49 @@ export default function Schedule({
             })}
           </div>
 
-          {schedules?.[selectedTab]?.times !== "Unavailable" && (
-            <div className="mt-4">
-              <h3 className="font-semibold mb-2">Available Time</h3>
-              <div className="grid grid-cols-1">
-                {schedules[selectedTab]?.times.map((newItem, j) => (
-                  <div key={j} className="flex items-center gap-2 mb-4 mt-2">
-                    <div className="font-medium">Shift {j + 1} : </div>
-                    <button className="px-4 py-2 rounded transition-colors bg-gray-200">
-                      {newItem.from} {" - "} {newItem.to}
-                    </button>
-                  </div>
-                ))}
+          {schedules?.[selectedTab]?.times !== "Unavailable" &&
+            schedules?.[selectedTab]?.times !== "Leave" && (
+              <div className="mt-4">
+                <h3 className="font-semibold mb-2">Available Time</h3>
+                <div className="grid grid-cols-1">
+                  {schedules[selectedTab]?.times.map((newItem, j) => (
+                    <div key={j} className="flex items-center gap-2 mb-4 mt-2">
+                      <div className="font-medium">Shift {j + 1} : </div>
+                      <button className="px-4 py-2 rounded transition-colors bg-gray-200">
+                        {newItem.from} {" - "} {newItem.to}
+                      </button>
+                    </div>
+                  ))}
+                </div>
               </div>
+            )}
+          {schedules?.[selectedTab]?.times === "Leave" && (
+            <div className="mt-6 bg-yellow-100 border border-yellow-400 text-yellow-800 p-4 rounded">
+              <h3 className="font-semibold text-lg mb-2">
+                Doctor is on leave today
+              </h3>
+              {schedules[selectedTab]?.reason ? (
+                <p>Reason: {schedules[selectedTab].reason}</p>
+              ) : (
+                <p>The doctor is not available for appointments today.</p>
+              )}
             </div>
           )}
         </div>
       )}
 
-      <button
-        onClick={handleConfirmAppointment}
-        className="cursor-pointer mt-4 w-full bg-blue-600 text-white px-6 py-3 rounded text-lg font-medium"
-      >
-        Confirm Booking
-      </button>
+      {schedules?.[selectedTab]?.times === "Leave" ? (
+        <div className="mt-4 w-full px-4 py-2 bg-gray-400 text-white font-semibold rounded block text-center cursor-not-allowed">
+          Appointment Closed
+        </div>
+      ) : (
+        <button
+          onClick={handleConfirmAppointment}
+          className="cursor-pointer mt-4 w-full bg-blue-600 text-white px-6 py-3 rounded text-lg font-medium"
+        >
+          Confirm Booking
+        </button>
+      )}
     </aside>
   );
 }

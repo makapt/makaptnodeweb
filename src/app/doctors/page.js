@@ -10,7 +10,11 @@ import { useRouter } from "next/navigation"; // Import useRouter
 import Breadcrumb from "./section/Breadcrumb";
 import { filtersData } from "./mockData";
 import DoctorCardList from "./section/DoctorCardList";
-import { formatSchedule, renderSpecialist } from "../../utils/helper";
+import {
+  applyUnavailabilityToSchedule,
+  formatSchedule,
+  renderSpecialist,
+} from "../../utils/helper";
 import { useApplicationContext } from "@/context/ApplicationContext";
 import { FiFilter } from "react-icons/fi";
 import SearchBar from "@/components/mobileSearchBar/SearchBar";
@@ -73,9 +77,17 @@ export default function DoctorListingPage() {
     setSortBy(e.target.value);
   };
 
-  const handleBookAppointment = (doctor) => {
+  const handleBookAppointment = async (doctor) => {
+    const unavailabilityData = await doctorFactory.getDoctorUnavailability({
+      id: doctor.doctorId,
+    });
+
     const res = formatSchedule(doctor?.schedules);
-    setSchedules(res);
+    const updatedSchedule = applyUnavailabilityToSchedule(
+      res,
+      unavailabilityData.data.data
+    );
+    setSchedules(updatedSchedule);
     setSelectedDoctor(doctor);
     setIsDrawerOpen(true);
     const firstAvailableIndex = res?.findIndex(
@@ -109,6 +121,22 @@ export default function DoctorListingPage() {
     router.push(`?${params.toString()}`, { scroll: false });
   };
 
+  function checkAvailability(schedule) {
+    const today = new Date();
+    const todayStr = today.toISOString().split("T")[0]; // Format: YYYY-MM-DD
+
+    if (schedule.date === todayStr) {
+      // Get the last time slot's 'to' time
+      const lastToTimeStr = schedule.times[schedule.times.length - 1].to;
+      const lastToDate = new Date(`${schedule.date} ${lastToTimeStr}`);
+
+      if (lastToDate < today) {
+        return { availability: false };
+      }
+    }
+    return { availability: true };
+  }
+  console.log("schedules", schedules);
   return (
     <div className="bg-white md:bg-gray-100 min-h-screen">
       <div className="max-w-7xl mx-auto p-4 ">
@@ -312,7 +340,6 @@ export default function DoctorListingPage() {
                 <p className="text-gray-600">
                   {renderSpecialist(selectedDoctor.specialization, id)}
                 </p>
-
                 {/* Date Selection Tabs */}
                 <div className="mt-4 border-b border-gray-300 pb-2 flex gap-2 overflow-x-auto">
                   {schedules?.slice(0, 4).map((schedule, index) => {
@@ -338,32 +365,52 @@ export default function DoctorListingPage() {
                     );
                   })}
                 </div>
-
-                {schedules?.[selectedTab]?.times !== "Unavailable" && (
-                  <div className="mt-4">
-                    <h3 className="font-semibold mb-2">Available Time</h3>
-                    <div className="grid grid-cols-1">
-                      {schedules[selectedTab]?.times.map((newItem, j) => (
-                        <div
-                          key={j}
-                          className="flex items-center gap-2 mb-4 mt-2"
-                        >
-                          <div className="font-medium">Shift {j + 1} : </div>
-                          <button className="px-4 py-2 rounded transition-colors bg-gray-200">
-                            {newItem.from} {" - "} {newItem.to}
-                          </button>
-                        </div>
-                      ))}
+                {schedules?.[selectedTab]?.times !== "Unavailable" &&
+                  schedules?.[selectedTab]?.times !== "Leave" && (
+                    <div className="mt-4">
+                      <h3 className="font-semibold mb-2">Available Time</h3>
+                      <div className="grid grid-cols-1">
+                        {schedules[selectedTab]?.times.map((newItem, j) => (
+                          <div
+                            key={j}
+                            className="flex items-center gap-2 mb-4 mt-2"
+                          >
+                            <div className="font-medium">Shift {j + 1} : </div>
+                            <button className="px-4 py-2 rounded transition-colors bg-gray-200">
+                              {newItem.from} {" - "} {newItem.to}
+                            </button>
+                          </div>
+                        ))}
+                      </div>
                     </div>
+                  )}
+
+                {schedules?.[selectedTab]?.times === "Leave" && (
+                  <div className="mt-6 bg-yellow-100 border border-yellow-400 text-yellow-800 p-4 rounded">
+                    <h3 className="font-semibold text-lg mb-2">
+                      Doctor is on leave today
+                    </h3>
+                    {schedules[selectedTab]?.reason ? (
+                      <p>Reason: {schedules[selectedTab].reason}</p>
+                    ) : (
+                      <p>The doctor is not available for appointments today.</p>
+                    )}
                   </div>
                 )}
 
-                <Link
-                  href={handleConfirmAppointment()}
-                  className="mt-4 w-full px-4 py-2 bg-green-500 text-white font-semibold rounded block text-center"
-                >
-                  Confirm Appointment
-                </Link>
+                {checkAvailability(schedules?.[selectedTab]).availability &&
+                schedules?.[selectedTab]?.times !== "Leave" ? (
+                  <Link
+                    href={handleConfirmAppointment()}
+                    className="mt-4 w-full px-4 py-2 bg-green-500 text-white font-semibold rounded block text-center"
+                  >
+                    Confirm Appointment
+                  </Link>
+                ) : (
+                  <div className="mt-4 w-full px-4 py-2 bg-gray-400 text-white font-semibold rounded block text-center cursor-not-allowed">
+                    Appointment Closed
+                  </div>
+                )}
               </div>
             )}
           </div>

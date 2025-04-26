@@ -77,7 +77,8 @@ const AddMember = () => {
   };
 
   const goBack = () => {
-    router.push("/profile/members");
+    // router.push("/profile/members");
+    router.back();
   };
 
   if (!profile) {
