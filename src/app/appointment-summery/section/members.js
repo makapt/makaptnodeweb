@@ -1,4 +1,5 @@
 import { truncateName } from "@/utils/helper";
+import Link from "next/link";
 import React from "react";
 
 export default function Members({ memberList, handlerMember }) {
@@ -24,9 +25,12 @@ export default function Members({ memberList, handlerMember }) {
         );
       })}
       <div className="p-1 rounded-lg w-[80px] flex items-center justify-center">
-        <button className="cursor-pointer whitespace-nowrap text-blue-600 text-[12px]">
+        <Link
+          href="/profile/members/add-member"
+          className="cursor-pointer whitespace-nowrap text-blue-600 text-[12px]"
+        >
           + Add Member
-        </button>
+        </Link>
       </div>
     </div>
   );

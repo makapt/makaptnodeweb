@@ -63,7 +63,8 @@ export default function DoctorDetailsPage() {
         res,
         unavailabilityData.data.data
       );
-      setSchedules(res);
+      // console.log("updatedSchedule", updatedSchedule);
+      setSchedules(updatedSchedule);
 
       const firstAvailableIndex = res?.findIndex(
         (schedule) => schedule.times !== "Unavailable"
