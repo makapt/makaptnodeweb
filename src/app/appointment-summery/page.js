@@ -133,8 +133,7 @@ export default function AppointmentSummery() {
 
       const response = await appointmentFactory.createOrder({
         amount,
-        doctorId: id,
-        appointmentDate: utcDate,
+        ...payload,
       });
 
       const { orderId, fullName, mobile, email } = response.data;
@@ -147,17 +146,13 @@ export default function AppointmentSummery() {
         description: "Doctor Consultation Fee",
         order_id: orderId,
         handler: async function (response) {
-          const { razorpay_payment_id, razorpay_order_id, razorpay_signature } =
-            response;
+          const { razorpay_order_id } = response;
           const token = generateToken();
 
           try {
             setLoader(true);
             await appointmentFactory.verifyOrderCreateAppt({
-              paymentId: razorpay_payment_id,
               orderId: razorpay_order_id,
-              signature: razorpay_signature,
-              ...payload,
             });
             router.push(
               "/payment-confiramtion?status=success&oid=" +
