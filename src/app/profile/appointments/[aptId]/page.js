@@ -1,11 +1,10 @@
 "use client";
 
 import { useState, useEffect, useCallback } from "react";
-import Link from "next/link";
 import CacheImage from "@/components/ui/cacheImage";
 import { useParams, useRouter } from "next/navigation";
 import {
-  formatFullDate,
+  formattedDate,
   renderEducation,
   renderSpecialist,
   slugify,
@@ -18,6 +17,7 @@ import {
   FiCreditCard,
   FiMapPin,
   FiArrowLeft,
+  FiRefreshCw,
 } from "react-icons/fi";
 import CancelAptModal from "./section/cancelAptModal";
 import RescheduleModal from "./section/rescheduleModal";
@@ -29,11 +29,17 @@ export default function DoctorDetailsPage() {
   const [apptDetail, setDetail] = useState(null);
   const [isCancelOpen, setCancelOpen] = useState(false);
   const [isRescheduleOpen, setRescheduleOpen] = useState(false);
+  const [liveNumber, setLiveNumber] = useState(null);
 
   const fetchData = useCallback(async () => {
     const result = await appointmentFactory.appointmentDetail(aptId);
+    const getRealWaitingNo = await appointmentFactory.getRealTimeWaitingNo({
+      doctorId: result.data.data.doctorId,
+      appointmentDate: result.data.data.appointmentDate,
+    });
+    setLiveNumber(getRealWaitingNo.data.data);
     setDetail(result.data);
-  }, [aptId]); // ✅ Depend on `aptId`
+  }, [aptId]);
 
   useEffect(() => {
     fetchData();
@@ -93,7 +99,7 @@ export default function DoctorDetailsPage() {
             <div className="w-full bg-white rounded shadow border border-gray-300">
               <div className="flex items-center justify-between p-2 md:p-4">
                 <span className="text-sm md:text-base font-semibold">
-                  Appointment ID #{apptDetail.data.apptID}
+                  #{apptDetail.data.apptID}
                 </span>
                 {getStatusBadge(apptDetail.data.apptStatus)}
               </div>
@@ -136,10 +142,26 @@ export default function DoctorDetailsPage() {
               </div>
             </div>
             <div className="mt-4 w-full bg-white p-4 rounded shadow border border-gray-300">
-              <div className="flex items-center">
-                <h2 className="text-base font-semibold flex-1">
-                  Appointment Detail
+              <div className="flex items-center justify-between">
+                <h2 className="hidden md:block text-base font-semibold">
+                  Appointment info
                 </h2>
+                <h2 className="block md:hidden text-base font-semibold">
+                  Now Serving
+                </h2>
+                {apptDetail.data.apptStatus === "pending" && (
+                  <h2
+                    onClick={() => window.location.reload()}
+                    className="flex items-center text-gray-700 cursor-pointer text-base font-semibold transition-all duration-200"
+                  >
+                    <span className="mr-2 hidden md:block">Now Serving</span>
+
+                    <span className="flex items-center gap-1 px-3 py-1 bg-green-100 text-green-700 rounded-md shadow-sm font-bold">
+                      #{liveNumber}
+                      <FiRefreshCw size={16} className="ml-[10px]" />
+                    </span>
+                  </h2>
+                )}
               </div>
 
               {/* Appointment Info */}
@@ -149,7 +171,7 @@ export default function DoctorDetailsPage() {
                   style={{ backgroundColor: "#E6E6F6", color: "#4C4DDC" }}
                 >
                   <span className="text-sm md:text-base font-semibold flex items-center">
-                    {formatFullDate(new Date(apptDetail.data.appointmentDate))}
+                    {formattedDate(apptDetail.data.appointmentDate)}
                   </span>
                   <span className="text-sm md:text-base font-semibold">
                     W.N. {apptDetail.data.waitingList}

@@ -69,4 +69,12 @@ appointmentFactory.getOrderInfo = async (orderId) => {
   return response;
 };
 
+appointmentFactory.getRealTimeWaitingNo = async (data) => {
+  console.log("data", data);
+  const response = await axiosInstance.get("getRealTimeWaitingNo", {
+    params: data,
+  });
+  return response;
+};
+
 export default appointmentFactory;
