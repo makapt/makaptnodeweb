@@ -70,10 +70,14 @@ appointmentFactory.getOrderInfo = async (orderId) => {
 };
 
 appointmentFactory.getRealTimeWaitingNo = async (data) => {
-  console.log("data", data);
   const response = await axiosInstance.get("getRealTimeWaitingNo", {
     params: data,
   });
+  return response;
+};
+
+appointmentFactory.transactionFailed = async (orderId) => {
+  const response = await axiosInstance.put("transaction-failed", orderId);
   return response;
 };
 
