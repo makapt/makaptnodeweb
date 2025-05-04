@@ -18,7 +18,7 @@ export default function Card({ path, item, rebookHandler, getStatusBadge }) {
         <div className="md:w-20 h-auto md:h-20 mb-4 md:mb-0 flex items-start">
           <CacheImage
             path={path}
-            src={item?.profiles?.[0]?.image || item.doctorDetails.image}
+            src={item?.profiles?.[0]?.image || item.doctorDetails?.image}
             width={70}
             height={70}
           />
