@@ -172,7 +172,10 @@ export default function AppointmentSummery() {
           }
         },
         modal: {
-          ondismiss: function () {
+          ondismiss: async function () {
+            await appointmentFactory.transactionFailed({
+              orderId: orderId,
+            });
             setBtnClicked(false);
           },
         },
