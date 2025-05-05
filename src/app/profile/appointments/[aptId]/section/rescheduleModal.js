@@ -1,7 +1,9 @@
 "use client";
 import appointmentFactory from "@/actions/appointmentAction";
+import doctorFactory from "@/actions/doctorAction";
+import Schedule from "@/app/doctors/[doctorId]/schedule";
 import { scrollToTop } from "@/components/ScrollTop";
-import { formatSchedule } from "@/utils/helper";
+import { applyUnavailabilityToSchedule, formatSchedule } from "@/utils/helper";
 import { Dialog } from "@headlessui/react";
 import { useCallback, useEffect, useState } from "react";
 import toast from "react-hot-toast";
@@ -23,8 +25,15 @@ export default function RescheduleModal({
   const fetchDetails = useCallback(async () => {
     try {
       const res = await appointmentFactory.getschedulelist(docId);
+      const unavailabilityData = await doctorFactory.getDoctorUnavailability({
+        id: docId,
+      });
       const result = formatSchedule(res.data.data);
-      setSchedules(result);
+      const updatedSchedule = applyUnavailabilityToSchedule(
+        result,
+        unavailabilityData.data.data
+      );
+      setSchedules(updatedSchedule);
       const firstAvailableIndex = result?.findIndex(
         (schedule) => schedule.times !== "Unavailable"
       );
@@ -56,7 +65,8 @@ export default function RescheduleModal({
       toast.error(e.response?.data?.message || e?.message);
     }
   };
-
+  console.log("schedules", schedules);
+  console.log("selectedTab", selectedTab);
   return (
     <Dialog open={isOpen} onClose={handlerClose} className="relative z-50">
       <div className="fixed inset-0 bg-black/30" aria-hidden="true" />
@@ -75,73 +85,16 @@ export default function RescheduleModal({
           <div className="p-4 overflow-y-auto max-h-[70vh]">
             <div className="bg-white w-full p-2">
               <div className="space-y-2 mb-4">
-                <aside className="w-full bg-white h-fit">
-                  <div className="">
-                    <div className="border-b border-gray-300 pb-2 flex gap-2 overflow-x-auto">
-                      {schedules?.slice(0, 4).map((schedule, index) => {
-                        return (
-                          <button
-                            key={index}
-                            className={`px-4 py-2 rounded transition-colors ${
-                              schedule?.times === "Unavailable"
-                                ? "bg-gray-200 text-gray-400 cursor-not-allowed" // Lighter gray for disabled
-                                : selectedTab === index
-                                ? "bg-blue-500 text-white cursor-pointer" // Active button
-                                : "bg-gray-100 text-gray-800 cursor-pointer" // Unselected button
-                            }`}
-                            disabled={schedule?.times === "Unavailable"}
-                            onClick={() => {
-                              if (schedule?.times !== "Unavailable") {
-                                setSelectedTab(index);
-                              }
-                            }}
-                          >
-                            <div className="w-10">{schedule.label}</div>
-                          </button>
-                        );
-                      })}
-                    </div>
-
-                    {schedules?.[selectedTab]?.times !== "Unavailable" && (
-                      <div className="mt-4">
-                        <h3 className="font-semibold mb-2">Available Time</h3>
-                        <div className="grid grid-cols-1">
-                          {schedules[selectedTab]?.times.map((newItem, j) => (
-                            <div
-                              key={j}
-                              className="flex items-center gap-2 mb-4 mt-2"
-                            >
-                              <div className="font-medium">
-                                Shift {j + 1} :{" "}
-                              </div>
-                              <button className="px-4 py-2 rounded transition-colors bg-gray-200">
-                                {newItem.from} {" - "} {newItem.to}
-                              </button>
-                            </div>
-                          ))}
-                        </div>
-                      </div>
-                    )}
-                  </div>
+                <aside className="w-full bg-white p-4 rounded shadow border border-gray-300 h-fit">
+                  <Schedule
+                    schedules={schedules}
+                    selectedTab={selectedTab}
+                    setSelectedTab={setSelectedTab}
+                    handleConfirmAppointment={handleReschedule}
+                  />
                 </aside>
               </div>
             </div>
-          </div>
-
-          {/* Footer */}
-          <div className="p-4 border-t bg-white flex gap-4">
-            <button
-              onClick={handlerClose}
-              className="cursor-pointer w-1/2 bg-gray-300 text-gray-700 px-4 py-2 rounded"
-            >
-              Cancel
-            </button>
-            <button
-              onClick={handleReschedule}
-              className={`cursor-pointer w-1/2 text-white px-4 py-2 rounded bg-blue-600`}
-            >
-              Confirm
-            </button>
           </div>
         </div>
       </div>
