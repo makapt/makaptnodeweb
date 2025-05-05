@@ -17,7 +17,7 @@ export default function HomeSearchBox({
   const router = useRouter();
   const [speData, setSpeData] = useState({ data: [] });
   const search = searchParams.get("search");
-
+  const address_line1 = searchParams.get("address_line1");
   const fetchData = async () => {
     const result = await homeFactory.getDefaultSpecialization();
     setSpeData(result.data);
@@ -31,7 +31,7 @@ export default function HomeSearchBox({
     doc_list: [],
   });
   const [showDropdown, setShowDropdown] = useState(false);
-  const [locationValue, setLocationValue] = useState("");
+  const [locationValue, setLocationValue] = useState(address_line1 || "");
   const [searchValue, setSearchValue] = useState(search || "");
 
   const [filteredLocations, setFilteredLocations] = useState([]);
@@ -77,9 +77,11 @@ export default function HomeSearchBox({
   }, [setLocationValue, setFilteredLocations, setSelectedLocation]);
 
   useEffect(() => {
-    getCurrentLatLong();
+    if (!address_line1) {
+      getCurrentLatLong();
+    }
     setSearchValue(search || "");
-  }, [getCurrentLatLong, search]);
+  }, [search, address_line1]);
 
   const getAddressFromCoordinates = async (lat, lng) => {
     const url = `https://nominatim.openstreetmap.org/reverse?format=json&lat=${lat}&lon=${lng}`;
