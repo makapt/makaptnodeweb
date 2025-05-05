@@ -13,12 +13,12 @@ import {
   FiChevronDown,
   FiNavigation,
 } from "react-icons/fi";
-import { FaSearch, FaMapMarkerAlt } from "react-icons/fa";
 import { slugify } from "@/utils/helper";
 export default function SearchBar() {
   const router = useRouter();
   const searchParams = useSearchParams();
   const search = searchParams.get("search");
+  const address_line1 = searchParams.get("address_line1");
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [searchQuery, setSearchQuery] = useState(search || "");
   const [speData, setSpeData] = useState({ data: [] });
@@ -27,11 +27,12 @@ export default function SearchBar() {
     doc_list: [],
   });
   const [isSearchInputClicked, setSearchInputClicked] = useState(false);
-  const [locationValue, setLocationValue] = useState("");
+  const [locationValue, setLocationValue] = useState(address_line1 || "");
   const [filteredLocations, setFilteredLocations] = useState([]);
   const [selectedLocation, setSelectedLocation] = useState({});
 
   console.log("search", search);
+  console.log("locationValue", locationValue);
 
   const fetchData = async () => {
     const result = await homeFactory.getDefaultSpecialization();
@@ -80,6 +81,7 @@ export default function SearchBar() {
             );
 
             const fetchedAddress = addressRes.data.data[1]?.long_name;
+            console.log("fetchedAddress", fetchedAddress);
             setLocationValue(fetchedAddress);
             setFilteredLocations([]);
             setSelectedLocation({
@@ -87,14 +89,6 @@ export default function SearchBar() {
               lat: latitude,
               lon: longitude,
             });
-            localStorage.setItem(
-              "userSelectedAddress",
-              JSON.stringify({
-                address_line1: fetchedAddress,
-                lat: latitude,
-                lon: longitude,
-              })
-            );
           } catch (error) {
             console.error("Error fetching address:", error);
           }
@@ -114,16 +108,14 @@ export default function SearchBar() {
   };
 
   useEffect(() => {
-    const storedLocation = localStorage.getItem("userSelectedAddress");
-    const parseAdd = JSON.parse(storedLocation);
-    if (parseAdd) {
-      setLocationValue(parseAdd.address_line1);
-      setFilteredLocations([]);
-      setSelectedLocation(parseAdd);
+    if (address_line1) {
+      setSelectedLocation({
+        address_line1: address_line1,
+      });
     } else {
       getCurrentLatLong();
     }
-  }, []);
+  }, [, address_line1]);
 
   const handleLocationChange = async (e) => {
     const text = e.target.value.trim();
@@ -162,7 +154,6 @@ export default function SearchBar() {
     }
     setSearchInputClicked(true);
     setFilteredLocations([]);
-    localStorage.setItem("userSelectedAddress", JSON.stringify(item));
   };
 
   return (

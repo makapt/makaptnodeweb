@@ -1,7 +1,6 @@
 "use client";
 
 import { useCallback, useEffect, useMemo, useState } from "react";
-import SeachBar from "./section/SeachBar";
 import FilterModal from "./section/FilterModal";
 import doctorFactory from "@/actions/doctorAction";
 import { MdArrowBack } from "react-icons/md";
@@ -18,6 +17,7 @@ import {
 import { useApplicationContext } from "@/context/ApplicationContext";
 import { FiFilter } from "react-icons/fi";
 import SearchBar from "@/components/mobileSearchBar/SearchBar";
+import DesktopSearchBar from "./section/SeachBar"; // this is only for the this component
 import ScreenLoader from "@/components/ui/ScreenLoader";
 import Link from "next/link";
 
@@ -136,7 +136,7 @@ export default function DoctorListingPage() {
     }
     return { availability: true };
   }
-  console.log("schedules", schedules);
+
   return (
     <div className="bg-white md:bg-gray-100 min-h-screen">
       <div className="max-w-7xl mx-auto p-4 ">
@@ -152,7 +152,9 @@ export default function DoctorListingPage() {
           <div className="w-full p-0 md:p-4  block md:hidden">
             <SearchBar />
           </div>
-          <SeachBar />
+          {/* For desktop screen */}
+          <DesktopSearchBar />
+          {/* For desktop screen */}
         </div>
       </div>
 

@@ -275,13 +275,15 @@ export default function DoctorDetailsPage() {
                 </div>
               </div>
               <div className="block md:hidden mt-6">
-                <Schedule
-                  schedules={schedules}
-                  doctor={doctor}
-                  selectedTab={selectedTab}
-                  setSelectedTab={setSelectedTab}
-                  handleConfirmAppointment={handleConfirmAppointment}
-                />
+                <aside className="w-full md:w-[35%] bg-white p-4 rounded shadow border border-gray-300 h-fit">
+                  <Schedule
+                    schedules={schedules}
+                    doctor={doctor}
+                    selectedTab={selectedTab}
+                    setSelectedTab={setSelectedTab}
+                    handleConfirmAppointment={handleConfirmAppointment}
+                  />
+                </aside>
               </div>
 
               <div className="mt-6 p-4 border border-gray-200 rounded-lg">
@@ -316,13 +318,15 @@ export default function DoctorDetailsPage() {
             </div>
 
             {isDesktop && (
-              <Schedule
-                schedules={schedules}
-                doctor={doctor}
-                selectedTab={selectedTab}
-                setSelectedTab={setSelectedTab}
-                handleConfirmAppointment={handleConfirmAppointment}
-              />
+              <aside className="w-full md:w-[35%] bg-white p-4 rounded shadow border border-gray-300 h-fit">
+                <Schedule
+                  schedules={schedules}
+                  doctor={doctor}
+                  selectedTab={selectedTab}
+                  setSelectedTab={setSelectedTab}
+                  handleConfirmAppointment={handleConfirmAppointment}
+                />
+              </aside>
             )}
           </div>
 
