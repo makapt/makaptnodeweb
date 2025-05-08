@@ -48,7 +48,7 @@ export default function Specialization({ selectedLocation = {} }) {
         {speData.data?.map((specialty, index) => (
           <div key={index} className="">
             <Link
-              href={`doctors?type=specialization&address_line1=${selectedLocation.address_line1}&lat=${selectedLocation.lat}&lng=${selectedLocation.lon}&search=${specialty.name}&slug=${specialty.slugName}&id=${specialty._id}`}
+              href={`doctors?type=specialization&city=${selectedLocation.city}&search=${specialty.name}&slug=${specialty.slugName}&id=${specialty._id}`}
               className="flex flex-col items-center cursor-pointer"
             >
               <div className="w-18 h-18 md:w-22 md:h-22 rounded-full overflow-hidden bg-[#f6f6f6] p-4">

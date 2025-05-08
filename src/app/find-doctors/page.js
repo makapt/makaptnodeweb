@@ -1,5 +1,4 @@
 "use client";
-import Head from "next/head";
 import { useState, useEffect } from "react";
 import DownloadApp from "@/components/home/DownloadApp";
 import Link from "next/link";
@@ -61,7 +60,7 @@ export default function FindDoctor() {
                 return (
                   <li key={i}>
                     <Link
-                      href={`doctors?type=specialization&address_line1=${selectedLocation.address_line1}&lat=${selectedLocation.lat}&lng=${selectedLocation.lon}search=${item.name}&slug=${item.slugName}&id=${item._id}`}
+                      href={`doctors?type=specialization&city=${selectedLocation.city}&search=${item.name}&slug=${item.slugName}&id=${item._id}`}
                       className="text-blue-600 hover:underline"
                     >
                       {item.name}

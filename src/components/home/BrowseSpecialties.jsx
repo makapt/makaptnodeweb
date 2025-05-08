@@ -47,7 +47,7 @@ export default function BrowseSpecialties({ selectedLocation }) {
           .map((specialty, index) => (
             <div key={index} className="">
               <Link
-                href={`doctors?type=specialization&address_line1=${selectedLocation.address_line1}&lat=${selectedLocation.lat}&lng=${selectedLocation.lon}&search=${specialty.name}&slug=${specialty.slugName}&id=${specialty._id}`}
+                href={`doctors?type=specialization&city=${selectedLocation.city}&search=${specialty.name}&slug=${specialty.slugName}&id=${specialty._id}`}
                 className="cursor-pointer flex flex-col items-center"
               >
                 <div className="w-16 h-16 md:w-22 md:h-22 rounded-full overflow-hidden bg-[#f6f6f6] p-3">

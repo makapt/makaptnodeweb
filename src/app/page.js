@@ -10,6 +10,7 @@ import useDeviceType from "@/hooks/useDeviceType";
 export default function Home() {
   const { isMobile } = useDeviceType();
   const [selectedLocation, setSelectedLocation] = useState({});
+  console.log("selectedLocation", selectedLocation);
   return (
     <>
       <div className="">

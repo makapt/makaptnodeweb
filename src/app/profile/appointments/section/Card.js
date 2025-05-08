@@ -1,20 +1,27 @@
 import CacheImage from "@/components/ui/cacheImage";
 import { formattedDate } from "@/utils/helper";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import React from "react";
 import { FaCalendarAlt, FaUser, FaMapMarkerAlt } from "react-icons/fa";
 
 export default function Card({ path, item, rebookHandler, getStatusBadge }) {
+  const router = useRouter();
   return (
     <div className="mb-4 mx-auto bg-white p-4 md:p-6 rounded-lg drop-shadow-lg">
       <div className="flex items-center justify-between mb-4">
         <span className="text-sm md:text-base font-semibold">
-          Appointment ID #{item.apptID}
+          #{item.apptID}
         </span>
         {getStatusBadge(item.apptStatus)}
       </div>
 
-      <div className="cursor-pointer flex md:flex-row gap-4 md:gap-6">
+      <div
+        onClick={() => {
+          router.push(`/profile/appointments/${item._id}`);
+        }}
+        className="cursor-pointer flex md:flex-row gap-4 md:gap-6"
+      >
         <div className="md:w-20 h-auto md:h-20 mb-4 md:mb-0 flex items-start">
           <CacheImage
             path={path}
@@ -25,10 +32,7 @@ export default function Card({ path, item, rebookHandler, getStatusBadge }) {
         </div>
         <div className="flex-1">
           <h2 className="text-base font-semibold mb-1">
-            <Link
-              href={`/profile/appointments/${item._id}`}
-              className="text-blue-600 hover:underline"
-            >
+            <Link href={`#`} className="text-blue-600 hover:underline">
               {item.doctorDetails.fullName}
             </Link>
           </h2>
