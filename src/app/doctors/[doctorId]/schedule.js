@@ -1,3 +1,4 @@
+import { checkAvailability } from "@/utils/apptHelper";
 import React from "react";
 
 export default function Schedule({
@@ -75,17 +76,18 @@ export default function Schedule({
         )}
       </div>
 
-      {schedules?.[selectedTab]?.times === "Leave" ? (
-        <div className="mt-4 w-full px-4 py-2 bg-gray-400 text-white font-semibold rounded block text-center cursor-not-allowed">
-          Appointment Closed
-        </div>
-      ) : (
+      {checkAvailability(schedules?.[selectedTab]).availability &&
+      schedules?.[selectedTab]?.times !== "Leave" ? (
         <button
           onClick={handleConfirmAppointment}
           className="cursor-pointer mt-4 w-full bg-blue-600 text-white px-6 py-3 rounded text-lg font-medium"
         >
           Confirm Booking
         </button>
+      ) : (
+        <div className="mt-4 w-full px-4 py-2 bg-gray-400 text-white font-semibold rounded block text-center cursor-not-allowed">
+          Appointment Closed
+        </div>
       )}
     </div>
   );

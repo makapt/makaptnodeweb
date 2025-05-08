@@ -18,7 +18,7 @@ export default function ReviewList({
   }
 
   return (
-    <div className="mt-8">
+    <div className="mt-8 p-0 md:p-4">
       {reviewList.data.length === 0 && (
         <div className="flex flex-col items-center justify-center text-center text-gray-500 py-12">
           <svg
@@ -53,7 +53,7 @@ export default function ReviewList({
       )}
 
       {reviewList.data.length > 0 && (
-        <h2 className="text-xl font-semibold flex items-center gap-2">
+        <h2 className="text-lg font-semibold flex items-center gap-2">
           {isMobile
             ? "Patient Stories"
             : `Patient Reviews for ${doctor.data.fullName}`}
@@ -66,7 +66,7 @@ export default function ReviewList({
             <div className="flex flex-col sm:flex-row gap-4 sm:items-start">
               {/* Avatar */}
               <div className="flex items-center gap-3">
-                <div className="w-12 h-12 bg-[#6b45c6] text-white rounded-full flex items-center justify-center font-bold text-lg shrink-0">
+                <div className="w-10 h-10 bg-[#6b45c6] text-white rounded-full flex items-center justify-center font-bold text-lg shrink-0">
                   {r.fullName.charAt(0).toUpperCase()}
                 </div>
                 {isMobile && (

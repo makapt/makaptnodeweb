@@ -20,6 +20,7 @@ import SearchBar from "@/components/mobileSearchBar/SearchBar";
 import DesktopSearchBar from "./section/SeachBar"; // this is only for the this component
 import ScreenLoader from "@/components/ui/ScreenLoader";
 import Link from "next/link";
+import { checkAvailability } from "@/utils/apptHelper";
 
 export default function DoctorListingPage() {
   const { isLoggedInUser } = useApplicationContext();
@@ -56,9 +57,14 @@ export default function DoctorListingPage() {
   const fetchData = useCallback(
     async (page) => {
       setLoader(true);
+
+      const savedLocation = localStorage.getItem("selectedLocation");
+      const parsed = JSON.parse(savedLocation);
       const offset = page - 1;
       const result = await doctorFactory.getDoctorLists({
         ...paramsObject,
+        lat: parsed?.lat || 26.8381,
+        lng: parsed?.lon || 80.9346001,
         itemsPerPage,
         offset,
         sortBy,
@@ -120,22 +126,6 @@ export default function DoctorListingPage() {
     }
     router.push(`?${params.toString()}`, { scroll: false });
   };
-
-  function checkAvailability(schedule) {
-    const today = new Date();
-    const todayStr = today.toISOString().split("T")[0]; // Format: YYYY-MM-DD
-
-    if (schedule.date === todayStr) {
-      // Get the last time slot's 'to' time
-      const lastToTimeStr = schedule.times[schedule.times.length - 1].to;
-      const lastToDate = new Date(`${schedule.date} ${lastToTimeStr}`);
-
-      if (lastToDate < today) {
-        return { availability: false };
-      }
-    }
-    return { availability: true };
-  }
 
   return (
     <div className="bg-white md:bg-gray-100 min-h-screen">
