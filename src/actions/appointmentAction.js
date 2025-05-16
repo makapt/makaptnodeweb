@@ -7,6 +7,11 @@ appointmentFactory.checkPatientLimit = async (data) => {
   return response;
 };
 
+appointmentFactory.bookAppointment = async (data) => {
+  const response = await axiosInstance.post("bookAppointment", data);
+  return response;
+};
+
 appointmentFactory.createOrder = async (data) => {
   const response = await axiosInstance.post("create-order", data);
   return response;

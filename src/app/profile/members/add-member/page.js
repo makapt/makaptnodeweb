@@ -12,6 +12,7 @@ import profileFactory from "@/actions/profileAction";
 import { FiArrowLeft } from "react-icons/fi";
 import toast from "react-hot-toast";
 import { phoneRegExp } from "@/utils/regex";
+import TextArea from "@/components/ui/textArea";
 
 export const memberSchema = yup.object().shape({
   patientName: yup.string().required("Patient name is required field"),
@@ -21,7 +22,12 @@ export const memberSchema = yup.object().shape({
     .matches(phoneRegExp, "Phone number is not valid")
     .min(10, "Phone number is not valid")
     .max(10, "Phone number is not valid"),
-  age: yup.string().required("Age is required field"),
+  age: yup
+    .number()
+    .typeError("Age must be a number")
+    .required("Age is a required field")
+    .min(0, "Age must be at least 0")
+    .max(120, "Age must be less than or equal to 120"),
   address: yup.string().required("Address is required field"),
   gender: yup.string().required("Gender is required field"),
   patientEmail: yup.string(),
@@ -118,54 +124,16 @@ const AddMember = () => {
                 )}
               />
             </div>
-            <div className="flex flex-row gap-4 w-full">
-              {/* Mobile (70%) / Desktop full */}
-              <div className="w-[70%]">
-                <Controller
-                  name="mobile"
-                  control={control}
-                  rules={{ required: true }}
-                  render={({ field, fieldState: { invalid, error } }) => (
-                    <Input
-                      {...field}
-                      type="text"
-                      placeholder="Enter Mobile Number"
-                      className="w-full px-4 py-2 border rounded-lg"
-                      error={error}
-                      invalid={invalid}
-                    />
-                  )}
-                />
-              </div>
-
-              {/* Mobile (30%) / Desktop full */}
-              <div className="w-[30%]">
-                <Controller
-                  name="age"
-                  control={control}
-                  render={({ field, fieldState: { invalid, error } }) => (
-                    <Input
-                      {...field}
-                      type="text"
-                      placeholder="Age"
-                      className="w-full px-4 py-2 border rounded-lg"
-                      error={error}
-                      invalid={invalid}
-                    />
-                  )}
-                />
-              </div>
-            </div>
-
             <div className="w-full">
               <Controller
-                name="address"
+                name="mobile"
                 control={control}
+                rules={{ required: true }}
                 render={({ field, fieldState: { invalid, error } }) => (
                   <Input
                     {...field}
                     type="text"
-                    placeholder="Enter Address"
+                    placeholder="Enter Mobile Number"
                     className="w-full px-4 py-2 border rounded-lg"
                     error={error}
                     invalid={invalid}
@@ -174,6 +142,22 @@ const AddMember = () => {
               />
             </div>
 
+            <div className="w-full">
+              <Controller
+                name="age"
+                control={control}
+                render={({ field, fieldState: { invalid, error } }) => (
+                  <Input
+                    {...field}
+                    type="text"
+                    placeholder="Age"
+                    className="w-full px-4 py-2 border rounded-lg"
+                    error={error}
+                    invalid={invalid}
+                  />
+                )}
+              />
+            </div>
             <div className="w-full">
               <Controller
                 name="gender"
@@ -198,15 +182,15 @@ const AddMember = () => {
               />
             </div>
 
-            <div className="w-full">
+            <div className="w-full col-span-1 md:col-span-2">
               <Controller
-                name="email"
+                name="address"
                 control={control}
                 render={({ field, fieldState: { invalid, error } }) => (
-                  <Input
+                  <TextArea
                     {...field}
-                    type="email"
-                    placeholder="Enter Email (Optional)"
+                    type="text"
+                    placeholder="Enter Address"
                     className="w-full px-4 py-2 border rounded-lg"
                     error={error}
                     invalid={invalid}

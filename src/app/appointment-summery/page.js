@@ -82,14 +82,21 @@ export default function AppointmentSummery() {
   };
 
   const serviceFees = () => {
+    let totalServiceFee = 0;
     const data = doctor.data;
-    const appointmentFee = data?.doctor_financials[0]?.normalFee;
-
-    const commissionPercentage =
+    const serviceChargeType =
+      data?.doctor_financials[0]?.platformServiceChargeType;
+    const platformServiceCharges =
       data?.doctor_financials[0]?.platformServiceCharges;
 
-    const commissionAmount = (appointmentFee * commissionPercentage) / 100;
-    const totalServiceFee = Math.round(commissionAmount);
+    const appointmentFee = data?.doctor_financials[0]?.normalFee;
+
+    if (serviceChargeType === "fixed") {
+      totalServiceFee = platformServiceCharges;
+    } else {
+      const commissionAmount = (appointmentFee * platformServiceCharges) / 100;
+      totalServiceFee = Math.round(commissionAmount);
+    }
     return totalServiceFee;
   };
 
@@ -191,6 +198,48 @@ export default function AppointmentSummery() {
 
       const rzp = new window.Razorpay(options);
       rzp.open();
+    } catch (error) {
+      console.error("Error during payment setup:", error);
+      setBtnClicked(false);
+      if (error.status === 400) setOpen(true);
+    }
+  };
+
+  const bookAppointment = async () => {
+    if (btnClicked) return;
+
+    setBtnClicked(true);
+
+    let selectedMem = [...memberList.data];
+    selectedMem = selectedMem.filter((item) => item.isDefault)[0];
+
+    if (!selectedMem) {
+      alert("Please select patient");
+      setBtnClicked(false);
+      return;
+    }
+
+    const utcDate = moment.tz(`${apptdate} 00:00`, "Asia/Kolkata").toDate();
+
+    const payload = {
+      appointmentDate: utcDate,
+      patientInfo: selectedMem,
+      doctorId: id,
+      specialist: specialist,
+      couponCode: null,
+      createdBy: "user",
+      apptSource: "web",
+      tax_service_charge: serviceFees(),
+    };
+
+    try {
+      const response = await appointmentFactory.bookAppointment({
+        ...payload,
+      });
+      setBtnClicked(true);
+      router.push(
+        "profile/appointments/" + response.data.aid + "?status=success"
+      );
     } catch (error) {
       console.error("Error during payment setup:", error);
       setBtnClicked(false);
@@ -306,11 +355,13 @@ export default function AppointmentSummery() {
                     Booking Fee & Tax{": "}
                   </span>
                   <span className="text-blue-600 text-[12px] font-semibold block">
-                    Pay now to confirm your appointment
+                    {serviceFees() === 0
+                      ? "We care for you & provide a free booking"
+                      : "Pay now to confirm your appointment"}
                   </span>
                 </p>
                 <p className="font-medium font-semibold text-black">
-                  ₹{serviceFees()}
+                  ₹{serviceFees() === 0 ? "Free" : serviceFees()}
                 </p>
               </div>
 
@@ -318,10 +369,19 @@ export default function AppointmentSummery() {
               <div className="border-t my-3"></div>
 
               {/* Total Amount to Pay Now */}
-              <div className="flex justify-between text-lg font-bold">
-                <p>Total to Pay Now:</p>
-                <p className="">₹{serviceFees()}</p>
-              </div>
+              {serviceFees() === 0 ? (
+                <div className="flex justify-between text-lg font-bold">
+                  <p>Total Payable</p>
+                  <p className="">
+                    ₹{doctor.data.doctor_financials[0].normalFee}
+                  </p>
+                </div>
+              ) : (
+                <div className="flex justify-between text-lg font-bold">
+                  <p>Total to Pay Now:</p>
+                  <p className="">₹{serviceFees()}</p>
+                </div>
+              )}
 
               {/* Terms & Policies */}
               <p className="text-gray-500 text-sm mt-3">
@@ -354,7 +414,7 @@ export default function AppointmentSummery() {
             </div>
 
             <button
-              onClick={handlePayment}
+              onClick={serviceFees() === 0 ? bookAppointment : handlePayment}
               disabled={btnClicked || isLimitFull}
               className={`w-full text-sm font-semibold mt-4 px-4 py-2 rounded-lg transition-all flex items-center justify-center ${
                 btnClicked || isLimitFull
@@ -368,7 +428,11 @@ export default function AppointmentSummery() {
                   Processing Payment...
                 </>
               ) : (
-                <>Pay ₹{serviceFees()} to Confirm Booking</>
+                <>
+                  {serviceFees() === 0
+                    ? "Confirm Clinic Visit"
+                    : `Pay ₹${serviceFees()} to Confirm Booking`}
+                </>
               )}
             </button>
             {isLimitFull && (

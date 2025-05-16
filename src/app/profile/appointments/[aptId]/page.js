@@ -2,7 +2,8 @@
 
 import { useState, useEffect, useCallback } from "react";
 import CacheImage from "@/components/ui/cacheImage";
-import { useParams, useRouter } from "next/navigation";
+import { useParams, useRouter, useSearchParams } from "next/navigation";
+import { AiOutlineCheckCircle } from "react-icons/ai";
 import {
   formattedDate,
   renderEducation,
@@ -25,6 +26,8 @@ import PatientDetail from "./section/patientDetail";
 
 export default function DoctorDetailsPage() {
   const router = useRouter();
+  const searchParams = useSearchParams();
+  const status = searchParams.get("status");
   const { aptId } = useParams();
   const [apptDetail, setDetail] = useState(null);
   const [isCancelOpen, setCancelOpen] = useState(false);
@@ -97,6 +100,16 @@ export default function DoctorDetailsPage() {
         <div className="max-w-7xl mx-auto p-4">
           <div className="">
             <div className="w-full bg-white rounded shadow border border-gray-300">
+              {status === "success" &&
+                apptDetail.data.apptStatus === "pending" && (
+                  <div className="m-4 bg-green-100 border border-green-300 text-green-800 px-4 py-3 rounded-lg flex items-center gap-3 shadow-sm">
+                    <AiOutlineCheckCircle className="text-green-600 text-2xl" />
+                    <span className="text-sm font-medium">
+                      Appointment confirmed successfully!
+                    </span>
+                  </div>
+                )}
+
               <div className="flex items-center justify-between p-2 md:p-4">
                 <span className="text-sm md:text-base font-semibold">
                   #{apptDetail.data.apptID}
@@ -241,12 +254,19 @@ export default function DoctorDetailsPage() {
                 </div>
 
                 {/* Amount Already Paid */}
-                <div className="flex items-center justify-between border-b pb-2">
-                  <p className="text-sm text-gray-600">Booking Fee (Paid)</p>
-                  <p className="text-sm font-semibold text-green-600">
-                    ₹{apptDetail.data.transactions[0].tax_service_charge}
-                  </p>
-                </div>
+                {apptDetail.data.transactions[0].tax_service_charge === 0 ? (
+                  <div className="flex items-center justify-between border-b pb-2">
+                    <p className="text-sm text-gray-600">Booking Fee</p>
+                    <p className="text-sm font-semibold text-green-600">Free</p>
+                  </div>
+                ) : (
+                  <div className="flex items-center justify-between border-b pb-2">
+                    <p className="text-sm text-gray-600">Booking Fee (Paid)</p>
+                    <p className="text-sm font-semibold text-green-600">
+                      ₹{apptDetail.data.transactions[0].tax_service_charge}
+                    </p>
+                  </div>
+                )}
 
                 {/* Total Charge */}
                 <div className="flex items-center justify-between font-semibold">
