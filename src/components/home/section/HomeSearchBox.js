@@ -1,13 +1,13 @@
 "use client";
 
-import { useState, useRef, useEffect, useCallback } from "react";
-import { FaSearch, FaMapMarkerAlt } from "react-icons/fa"; // Import icons
-import { useRouter } from "next/navigation"; // Import useRouter
+import { useState, useRef, useEffect } from "react";
+import { FaSearch, FaMapMarkerAlt } from "react-icons/fa";
+import { useRouter, useSearchParams } from "next/navigation";
 import homeFactory from "@/actions/homeAction";
 import useDebouncedCallback from "@/hooks/useDebouncedCallback";
 import SearchList from "./SearchList";
-import { useSearchParams } from "next/navigation";
 import { slugify } from "@/utils/helper";
+import { getUserLocation } from "@/utils/getUserLocation";
 
 export default function HomeSearchBox({
   selectedLocation,
@@ -15,9 +15,42 @@ export default function HomeSearchBox({
 }) {
   const searchParams = useSearchParams();
   const router = useRouter();
-  const [speData, setSpeData] = useState({ data: [] });
+  const dropdownRef = useRef(null);
   const search = searchParams.get("search");
-  const address_line1 = searchParams.get("address_line1");
+  const city = searchParams.get("city");
+
+  const [speData, setSpeData] = useState({ data: [] });
+  const [filteredOptions, setFilteredOptions] = useState({
+    spe_list: [],
+    doc_list: [],
+  });
+  const [showDropdown, setShowDropdown] = useState(false);
+  const [locationValue, setLocationValue] = useState(city || "");
+  const [searchValue, setSearchValue] = useState(search || "");
+  const [filteredLocations, setFilteredLocations] = useState([]);
+  const [showLocationDropdown, setShowLocationDropdown] = useState(false);
+
+  // Restore saved location from localStorage
+  useEffect(() => {
+    const savedLocation = localStorage.getItem("selectedLocation");
+
+    if (savedLocation) {
+      const parsed = JSON.parse(savedLocation);
+      setLocationValue(parsed.city);
+      setSelectedLocation(parsed);
+    } else {
+      getUserLocation()
+        .then((location) => {
+          localStorage.setItem("selectedLocation", JSON.stringify(location));
+          setLocationValue(location.city);
+          setSelectedLocation(location);
+        })
+        .catch((err) => {
+          console.warn("Could not get user location:", err);
+        });
+    }
+  }, []);
+
   const fetchData = async () => {
     const result = await homeFactory.getDefaultSpecialization();
     setSpeData(result.data);
@@ -26,76 +59,9 @@ export default function HomeSearchBox({
   useEffect(() => {
     fetchData();
   }, []);
-  const [filteredOptions, setFilteredOptions] = useState({
-    spe_list: [],
-    doc_list: [],
-  });
-  const [showDropdown, setShowDropdown] = useState(false);
-  const [locationValue, setLocationValue] = useState(address_line1 || "");
-  const [searchValue, setSearchValue] = useState(search || "");
-
-  const [filteredLocations, setFilteredLocations] = useState([]);
-  const [showLocationDropdown, setShowLocationDropdown] = useState(false);
-
-  const dropdownRef = useRef(null);
-
-  const getCurrentLatLong = useCallback(() => {
-    if ("geolocation" in navigator) {
-      navigator.geolocation.getCurrentPosition(
-        async (position) => {
-          try {
-            const { latitude, longitude } = position.coords;
-
-            // Fetch Address
-            const fetchedAddress = await getAddressFromCoordinates(
-              latitude,
-              longitude
-            );
-            setLocationValue(fetchedAddress);
-            setFilteredLocations([]);
-            setSelectedLocation({
-              address_line1: fetchedAddress,
-              lat: latitude,
-              lon: longitude,
-            });
-          } catch (error) {
-            console.error("Error fetching address:", error);
-          }
-        },
-        (error) => {
-          console.error("Error getting location:", error.message);
-          if (error.code === error.PERMISSION_DENIED) {
-            console.log(
-              "Location permission denied. Please enable it in settings."
-            );
-          }
-        }
-      );
-    } else {
-      console.error("Geolocation is not supported.");
-    }
-  }, [setLocationValue, setFilteredLocations, setSelectedLocation]);
-
-  useEffect(() => {
-    if (!address_line1) {
-      getCurrentLatLong();
-    }
-    setSearchValue(search || "");
-  }, [search, address_line1]);
-
-  const getAddressFromCoordinates = async (lat, lng) => {
-    const url = `https://nominatim.openstreetmap.org/reverse?format=json&lat=${lat}&lon=${lng}`;
-    try {
-      const res = await fetch(url);
-      const data = await res.json();
-      return data.address.city;
-    } catch (error) {
-      console.error("Error fetching address:", error);
-    }
-  };
 
   const handleLocationChange = (e) => {
-    const text = e.target.value.trim();
+    const text = e.target.value;
     setLocationValue(text);
     fetch(
       `https://api.geoapify.com/v1/geocode/autocomplete?text=${text}&type=city&limit=5&format=json&filter=countrycode:in&apiKey=1aa33c1c139b45bb9e74c15ca565275e`
@@ -148,9 +114,7 @@ export default function HomeSearchBox({
   const handleSelectFilter = (item) => {
     const queryParams = new URLSearchParams({
       type: item.name ? "specialization" : "doctor",
-      address_line1: selectedLocation.address_line1 || "",
-      lat: selectedLocation.lat || "",
-      lng: selectedLocation.lon || "",
+      city: selectedLocation.city || "",
     });
 
     if (item.name) {
@@ -168,10 +132,25 @@ export default function HomeSearchBox({
 
   const handleSelectLocation = (item) => {
     if (item === "current_location") {
-      getCurrentLatLong();
+      getUserLocation()
+        .then((location) => {
+          localStorage.setItem("selectedLocation", JSON.stringify(location));
+          setLocationValue(location.city);
+          setSelectedLocation(location);
+        })
+        .catch((err) => {
+          console.warn("Could not get user location:", err);
+        });
     } else {
-      setLocationValue(item.address_line1);
-      setSelectedLocation(item);
+      const loc = {
+        lat: item.lat,
+        lon: item.lon,
+        city: item.city,
+      };
+
+      setLocationValue(loc.city);
+      setSelectedLocation(loc);
+      localStorage.setItem("selectedLocation", JSON.stringify(loc));
     }
     setShowLocationDropdown(false);
     setShowDropdown(true);
@@ -212,14 +191,14 @@ export default function HomeSearchBox({
                 className="flex items-center px-4 py-3 cursor-pointer hover:bg-blue-100 text-gray-700 border-b border-gray-300"
                 onClick={() => handleSelectLocation(loc)}
               >
-                <FaSearch className="text-gray-500 mr-2" /> {loc.address_line1}
+                <FaSearch className="text-gray-500 mr-2" /> {loc.city}
               </li>
             ))}
           </ul>
         )}
       </div>
 
-      {/* Search Input with Icon */}
+      {/* Search Input */}
       <div className="relative w-full md:w-2/3">
         <FaSearch className="absolute left-3 top-3 text-gray-500" />
         <input
@@ -254,10 +233,6 @@ export default function HomeSearchBox({
                 ))}
           </ul>
         )}
-
-        {/* <li className="px-4 py-2 flex items-center text-gray-500 border-b border-gray-300">
-          <FaSearch className="mr-2" /> No results found
-        </li> */}
       </div>
     </div>
   );

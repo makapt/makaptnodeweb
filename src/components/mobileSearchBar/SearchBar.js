@@ -14,11 +14,13 @@ import {
   FiNavigation,
 } from "react-icons/fi";
 import { slugify } from "@/utils/helper";
+import { getUserLocation } from "@/utils/getUserLocation";
+
 export default function SearchBar() {
   const router = useRouter();
   const searchParams = useSearchParams();
   const search = searchParams.get("search");
-  const address_line1 = searchParams.get("address_line1");
+  const city = searchParams.get("city");
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [searchQuery, setSearchQuery] = useState(search || "");
   const [speData, setSpeData] = useState({ data: [] });
@@ -27,12 +29,9 @@ export default function SearchBar() {
     doc_list: [],
   });
   const [isSearchInputClicked, setSearchInputClicked] = useState(false);
-  const [locationValue, setLocationValue] = useState(address_line1 || "");
+  const [locationValue, setLocationValue] = useState(city || "");
   const [filteredLocations, setFilteredLocations] = useState([]);
   const [selectedLocation, setSelectedLocation] = useState({});
-
-  console.log("search", search);
-  console.log("locationValue", locationValue);
 
   const fetchData = async () => {
     const result = await homeFactory.getDefaultSpecialization();
@@ -69,56 +68,28 @@ export default function SearchBar() {
     setIsModalOpen(false);
   };
 
-  const getCurrentLatLong = () => {
-    if ("geolocation" in navigator) {
-      navigator.geolocation.getCurrentPosition(
-        async (position) => {
-          try {
-            const { latitude, longitude } = position.coords;
-            const addressRes = await homeFactory.getAddressFromCoordinates(
-              latitude,
-              longitude
-            );
-
-            const fetchedAddress = addressRes.data.data[1]?.long_name;
-            console.log("fetchedAddress", fetchedAddress);
-            setLocationValue(fetchedAddress);
-            setFilteredLocations([]);
-            setSelectedLocation({
-              address_line1: fetchedAddress,
-              lat: latitude,
-              lon: longitude,
-            });
-          } catch (error) {
-            console.error("Error fetching address:", error);
-          }
-        },
-        (error) => {
-          console.error("Error getting location:", error.message);
-          if (error.code === error.PERMISSION_DENIED) {
-            console.log(
-              "Location permission denied. Please enable it in settings."
-            );
-          }
-        }
-      );
-    } else {
-      console.error("Geolocation is not supported.");
-    }
-  };
-
   useEffect(() => {
-    if (address_line1) {
-      setSelectedLocation({
-        address_line1: address_line1,
-      });
+    const savedLocation = localStorage.getItem("selectedLocation");
+
+    if (savedLocation) {
+      const parsed = JSON.parse(savedLocation);
+      setLocationValue(parsed.city);
+      setSelectedLocation(parsed);
     } else {
-      getCurrentLatLong();
+      getUserLocation()
+        .then((location) => {
+          localStorage.setItem("selectedLocation", JSON.stringify(location));
+          setLocationValue(location.city);
+          setSelectedLocation(location);
+        })
+        .catch((err) => {
+          console.warn("Could not get user location:", err);
+        });
     }
-  }, [, address_line1]);
+  }, []);
 
   const handleLocationChange = async (e) => {
-    const text = e.target.value.trim();
+    const text = e.target.value;
     setLocationValue(text);
     const res = await homeFactory.autocomplete(text);
     setFilteredLocations(res.data.data.results || []);
@@ -127,9 +98,7 @@ export default function SearchBar() {
   const handleSelectFilter = (item) => {
     const queryParams = new URLSearchParams({
       type: item.name ? "specialization" : "doctor",
-      address_line1: selectedLocation.address_line1 || "",
-      lat: selectedLocation.lat || "",
-      lng: selectedLocation.lon || "",
+      city: selectedLocation.city || "",
     });
 
     if (item.name) {
@@ -147,13 +116,27 @@ export default function SearchBar() {
 
   const handleSelectLocation = (item) => {
     if (item === "current_location") {
-      getCurrentLatLong();
+      getUserLocation()
+        .then((location) => {
+          localStorage.setItem("selectedLocation", JSON.stringify(location));
+          setLocationValue(location.city);
+          setSelectedLocation(location);
+        })
+        .catch((err) => {
+          console.warn("Could not get user location:", err);
+        });
     } else {
-      setLocationValue(item.address_line1);
-      setSelectedLocation(item);
+      const loc = {
+        lat: item.lat,
+        lon: item.lon,
+        city: item.city,
+      };
+
+      setLocationValue(loc.city);
+      setSelectedLocation(loc);
+      localStorage.setItem("selectedLocation", JSON.stringify(loc));
     }
     setSearchInputClicked(true);
-    setFilteredLocations([]);
   };
 
   return (
@@ -162,14 +145,14 @@ export default function SearchBar() {
         onClick={() => {
           setIsModalOpen(true);
           setSearchInputClicked(false);
-          setLocationValue(selectedLocation?.address_line1);
+          setLocationValue(selectedLocation?.city);
           setFilteredLocations([]);
         }}
         className="flex items-center gap-2 py-3 bg-white w-fit"
       >
         <FiMapPin className="text-blue-600 w-4 h-4" />
         <span className="text-sm font-medium text-gray-800">
-          {selectedLocation?.address_line1 || "Your Location"}
+          {selectedLocation?.city || "Your Location"}
         </span>
         <FiChevronDown className="text-gray-500 w-5 h-5" />
       </div>
@@ -247,7 +230,7 @@ export default function SearchBar() {
                     <div className="p-2 bg-gray-200 rounded-full">
                       <FiMapPin className="text-gray-600 w-4 h-4" />
                     </div>
-                    {loc.address_line1}
+                    {loc.city}
                   </li>
                 ))}
               </ul>

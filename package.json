@@ -26,6 +26,7 @@
     "react-toastify": "^11.0.5",
     "swr": "^2.3.3",
     "universal-cookie": "^8.0.1",
+    "yet-another-react-lightbox": "^3.23.0",
     "yup": "^1.6.1"
   },
   "devDependencies": {

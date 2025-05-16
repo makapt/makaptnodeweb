@@ -11,6 +11,7 @@ const ApplicationContext = createContext();
 const Provider = ({ children }) => {
   const [isLoggedInUser, setLoggedInUser] = useState(false);
   const [accounts, setAccounts] = useState(null);
+  const [visitedLocation, setVisitedLocation] = useState({});
 
   const login = (token, redirectionURL) => {
     cookies.set("__mtoken", token, {

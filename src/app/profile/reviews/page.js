@@ -78,13 +78,13 @@ export default function ProfilePage() {
         >
           <div className="flex items-center justify-between mb-2">
             <span className="text-sm font-semibold">
-              {formatAppointmentDate(new Date())}
+              {formatAppointmentDate(item.createdAt)}
             </span>
             {getStatusBadge(item.status)}
           </div>
 
           <h2 className="text-sm font-semibold mb-2">
-            Feedback for Dr. Gaurav baraawa
+            Feedback for {item.doctorFullName}
           </h2>
 
           <div className="">
